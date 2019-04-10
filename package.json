@@ -4,7 +4,7 @@
   "description": "Add a Gutenberg block for embedding images from the NH3 archive",
   "main": "nh3-mag-archive-image-block.php",
   "scripts": {
-    "start": "wp-scripts start",
+    "start": "concurrently \"wp-scripts start\" \"gulp watch\"",
     "test": "echo \"Error: no test specified\" && exit 1",
     "zip": "gulp zip",
     "build": "wp-scripts build"
@@ -27,6 +27,7 @@
   "homepage": "https://github.com/MediaComem/nh3-mag-archive-image-block#readme",
   "devDependencies": {
     "@wordpress/scripts": "3.1.0",
+    "concurrently": "^4.1.0",
     "gulp": "^4.0.0",
     "gulp-rename": "^1.4.0",
     "gulp-zip": "^4.2.0"
