@@ -1,0 +1,39 @@
+{
+  "name": "mei/nh3-mag-archive-image-block",
+  "description": "Add a Gutenberg block for embedding images from the NH3 archive",
+  "keywords": ["mei", "embed", "archive", "image", "gutenberg", "block"],
+  "license": "MIT",
+  "type": "wordpress-plugin",
+  "require": {
+    "php": ">=5.2.4"
+  },
+  "require-dev": {
+    "squizlabs/php_codesniffer": "3.*",
+    "wp-coding-standards/wpcs": "0.14.*"
+  },
+  "scripts": {
+    "post-update-cmd": [
+      "phpcs --config-set installed_paths vendor/wp-coding-standards/wpcs"
+    ],
+    "lint": [
+      "phpcs --standard=.phpcs.xml ./"
+    ],
+    "lint:fix": [
+      "phpcbf --standard=.phpcs.xml ./"
+    ],
+    "release": [
+      "CliScripts\\Releases::route"
+    ],
+    "release help": [
+      "CliScripts\\Releases::writeHelp"
+    ],
+    "plugin-header": [
+      "CliScripts\\PluginHeader::generate"
+    ]
+  },
+  "autoload": {
+    "psr-4": {
+      "CliScripts\\": "cli-scripts/"
+    }
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "pluginName": "NH3 Mag - Archive Image Block",
+  "description": "Add a Gutenberg block for embedding images from the NH3 archive",
+  "version": "0.0.1",
+  "author": "MEI",
+  "authorUri": "https://heig-vd.ch/rad/instituts/mei/",
+  "textDomain": "nh3-mag-archive-image",
+  "domainPath": "/languages",
+  "bootstrapFilePath": "bootstrap.php"
+}

@@ -1,0 +1,24 @@
+# Project folders
+vendor/
+node_modules/
+
+# Build files
+build/
+
+# Temporary files
+.DS_Store
+
+# Log files
+npm-debug.log
+
+# Language backup files
+**/*.po~
+**/*.pot~
+
+# Releases
+releases/
+.release.conf
+**/*.zip
+
+# Misc
+curl.txt
