@@ -22,3 +22,6 @@ releases/
 
 # Misc
 curl.txt
+
+# Secrets
+.nh3-api-token.json
