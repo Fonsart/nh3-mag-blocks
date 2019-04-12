@@ -4,10 +4,11 @@
   "description": "Add a Gutenberg block for embedding images from the NH3 archive",
   "main": "nh3-mag-archive-image-block.php",
   "scripts": {
-    "start": "concurrently \"wp-scripts start\" \"gulp watch\"",
+    "start": "concurrently \"wp-scripts start\" \"gulp\" \"npm run proxy\"",
     "test": "echo \"Error: no test specified\" && exit 1",
     "zip": "gulp zip",
-    "build": "wp-scripts build"
+    "build": "wp-scripts build",
+    "proxy": "cors-http-proxy -t https://dev2.notrehistoire.ch/api/v1 -p 666"
   },
   "repository": {
     "type": "git",
@@ -27,7 +28,9 @@
   "homepage": "https://github.com/MediaComem/nh3-mag-archive-image-block#readme",
   "devDependencies": {
     "@wordpress/scripts": "3.1.0",
+    "browser-sync": "^2.26.3",
     "concurrently": "^4.1.0",
+    "cors-http-proxy": "^2.0.0",
     "gulp": "^4.0.0",
     "gulp-rename": "^1.4.0",
     "gulp-zip": "^4.2.0"
@@ -38,5 +41,6 @@
     "textDomain": "nh3-mag-archive-image",
     "domainPath": "/languages",
     "bootstrapFilePath": "bootstrap.php"
-  }
+  },
+  "dependencies": {}
 }
