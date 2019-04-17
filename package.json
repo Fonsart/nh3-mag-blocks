@@ -42,5 +42,7 @@
     "domainPath": "/languages",
     "bootstrapFilePath": "bootstrap.php"
   },
-  "dependencies": {}
+  "dependencies": {
+    "lodash.debounce": "^4.0.8"
+  }
 }

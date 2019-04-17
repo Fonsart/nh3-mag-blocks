@@ -17,6 +17,7 @@ function makeZip() {
       '{js,js/**/*}',
       '{css,css/**/*}',
       'languages/**/{*.po~,*.pot~}',
+      '{templates,templates/**/*}'
     ])
     .pipe(rename((file) => file.dirname = `${pluginName}/${file.dirname}`))
     .pipe(zip(`${pluginName}.zip`))
