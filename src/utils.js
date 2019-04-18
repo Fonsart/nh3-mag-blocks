@@ -15,6 +15,6 @@ export function escapeRegExp(string) {
  * @return {Boolean}
  */
 export function validateEntryUrl(url) {
-  const format = new RegExp(`^${escapeRegExp(BASE_URL)}\/[a-zA-Z1-9]+$`);
+  const format = new RegExp(`^${escapeRegExp(BASE_URL)}\/[a-zA-Z0-9]+$`);
   return format.test(url);
 }
