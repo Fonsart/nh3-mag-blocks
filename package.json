@@ -1,48 +1,53 @@
 {
-  "name": "nh3-mag-archive-image-block",
-  "version": "0.0.1",
-  "description": "Add a Gutenberg block for embedding images from the NH3 archive",
-  "main": "nh3-mag-archive-image-block.php",
-  "scripts": {
-    "start": "concurrently \"wp-scripts start\" \"gulp\" \"npm run proxy\"",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "zip": "gulp zip",
-    "build": "wp-scripts build",
-    "proxy": "cors-http-proxy -t https://dev2.notrehistoire.ch/api/v1 -p 666"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/MediaComem/nh3-mag-archive-image-block.git"
-  },
-  "keywords": [
-    "wordpress",
-    "plugin",
-    "gutenberg",
-    "block"
-  ],
-  "author": "Media Engineering Institute (MEI)",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/MediaComem/nh3-mag-archive-image-block/issues"
-  },
-  "homepage": "https://github.com/MediaComem/nh3-mag-archive-image-block#readme",
-  "devDependencies": {
-    "@wordpress/scripts": "3.1.0",
-    "browser-sync": "^2.26.3",
-    "concurrently": "^4.1.0",
-    "cors-http-proxy": "^2.0.0",
-    "gulp": "^4.0.0",
-    "gulp-rename": "^1.4.0",
-    "gulp-zip": "^4.2.0"
-  },
-  "wp": {
-    "pluginName": "NH3 Mag - Archive Image Block",
-    "authorUri": "https://heig-vd.ch/rad/instituts/mei/",
-    "textDomain": "nh3-mag-archive-image",
-    "domainPath": "/languages",
-    "bootstrapFilePath": "bootstrap.php"
-  },
-  "dependencies": {
-    "lodash.debounce": "^4.0.8"
-  }
+    "name": "nh3-mag-archive-blocks",
+    "version": "0.0.2",
+    "description": "Add Gutenberg blocks for embedding NH3 documents in a post",
+    "main": "nh3-mag-archive-blocks.php",
+    "scripts": {
+        "start": "concurrently \"wp-scripts start\" \"gulp\" \"npm run proxy\"",
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "dist": "npm run build && npm run zip",
+        "zip": "gulp zip",
+        "build": "gulp clean:build && gulp css:build && wp-scripts build",
+        "proxy": "cors-http-proxy -t https://dev2.notrehistoire.ch/api/v1 -p 666",
+        "version:major": "composer release major && npm run dist",
+        "version:minor": "composer release minor && npm run dist",
+        "version:patch": "composer release patch && npm run dist"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/MediaComem/nh3-mag-archive-blocks.git"
+    },
+    "keywords": [
+        "wordpress",
+        "plugin",
+        "gutenberg",
+        "block"
+    ],
+    "author": "Media Engineering Institute (MEI)",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/MediaComem/nh3-mag-archive-blocks/issues"
+    },
+    "homepage": "https://github.com/MediaComem/nh3-mag-archive-blocks#readme",
+    "devDependencies": {
+        "@wordpress/scripts": "3.1.0",
+        "browser-sync": "^2.26.3",
+        "concurrently": "^4.1.0",
+        "cors-http-proxy": "^2.0.0",
+        "del": "^4.1.0",
+        "gulp": "^4.0.0",
+        "gulp-rename": "^1.4.0",
+        "gulp-zip": "^4.2.0"
+    },
+    "wp": {
+        "pluginName": "NH3 Mag - Archive Image Block",
+        "authorUri": "https://heig-vd.ch/rad/instituts/mei/",
+        "textDomain": "nh3-mag-archive-photo",
+        "domainPath": "/languages",
+        "bootstrapFilePath": "bootstrap.php"
+    },
+    "dependencies": {
+        "lodash.debounce": "^4.0.8"
+    }
 }

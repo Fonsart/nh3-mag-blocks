@@ -1,9 +1,10 @@
 const gulp = require('gulp');
+const del = require('del');
 const zip = require('gulp-zip');
 const rename = require('gulp-rename');
 const browsersync = require('browser-sync');
 
-const pluginName = 'nh3-mag-archive-image-block';
+const pluginName = 'nh3-mag-archive-blocks';
 
 /**
  * 'zip' task function.
@@ -14,8 +15,7 @@ function makeZip() {
   return gulp
     .src([
       '*.php',
-      '{js,js/**/*}',
-      '{css,css/**/*}',
+      '{build,build/**/*}',
       'languages/**/{*.po~,*.pot~}',
       '{templates,templates/**/*}'
     ])
@@ -49,6 +49,10 @@ function watchBuild() {
   return gulp.watch('build/**/*', reloadBrowser);
 }
 
+function cleanBuild() {
+    return del('build/**');
+}
+
 /**
  * Promise wrapper around the BrowserSync reload() method.
  */
@@ -80,4 +84,5 @@ module.exports = {
   'sync': syncBrowser,
   'watch': watch,
   'zip': makeZip,
+  'clean:build': cleanBuild
 };

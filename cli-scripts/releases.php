@@ -15,16 +15,77 @@ class Releases {
   const VERSION_SYNTAX = '/v(\d\.){2}\d/';
   const WHITELIST = ['major', 'minor', 'patch'];
 
+  /**
+   * Creates a new release using the semver syntax.
+   * The function accepts one argument, which is the type of the release, that must be one of the following values:
+   * * `major` - A major release up the major number of your semver, and reset the minor and patch numbers, i.e. going from v0.1.3 to v1.0.0
+   * * `minor` - A minor release up the minor number of your semver, and reset the patch number, i.e. going from v0.1.3 to v0.2.0
+   * * `patch` - A patch release up the patch number of your semver, i.e. going from v0.1.3 to v0.1.4
+   *
+   * The current version number is retrieved and bumped according to the given $type.
+   *
+   * After bumping the version number, it will be saved in both the plugin.json file and package.json file.
+   * Then, those file changes will be commited to git and tagged with a new git tag, whose name will be the new version number.
+   * Finally, these new commit and tag will be pushed to the current remote branch.
+   *
+   * @param string $type The type of release to make
+   */
+  private static function make(string $type) {
+    if (self::check_git_status()) {
+      $versions = self::bump_version_number($type);
+      write([
+        "INFO ---- Last version found was ".$versions['last'],
+        "INFO ---- Release type \"$type\" bumped the version to ".$versions['current']
+      ]);
+      // Update the plugin config
+      self::update_plugin_json_version($versions['current']);
+      // Update the package.json if it exists
+      if (file_exists('package.json')) {
+        self::update_package_json_version($versions['current']);
+      }
+      // Regenerate the plugin header file
+      exec('composer plugin-header');
+      // Make new commit
+      exec('git add .');
+      exec('git commit -m "Release new '.$type.' version - '.$versions['current'].'"');
+      write('INFO ---- New commit for the release.');
+      // Add new tag with the new version
+      exec("git tag ".$versions['current']);
+      write('INFO ---- New git tag "'.$versions['current'].'" created.');
+      // Push changes to remote
+      exec('git push && git push --tag');
+      write('SUCCESS - Release commit and tag pushed to remote branch');
+    }
+  }
+
+  /**
+   * Update the version number in the package.json file.
+   * The file MUST exists for this method to work.
+   * @param string $version The version value
+   */
+  private static function update_package_json_version($version) {
+    $config = load_package_json();
+    $config->version = str_replace('v', '', $version);
+    file_put_contents('package.json', json_encode($config, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+    write("SUCCESS - Package.json version has been updated to $version");
+  }
+
+  /**
+   * Main entry point.
+   * Will execute an action based on the given parameters.
+   * @param Event $event A Composer Event object
+   */
   public static function route(Event $event) {
     $args = $event->getArguments();
     // Incorrect number of arguments
     if ( sizeof($args) === 0 || sizeof($args) > 2 ) {
       write("ERROR --- You provided ".sizeof($args)." argument".(sizeof($args) === 0 ? '' : 's').".");
-      self::writeHelp();
+      self::write_help();
       exit();
     }
     $action = $args[0];
-    if ($action === self::COMMANDS[0]) { // delete
+    // Delete action
+    if ($action === self::COMMANDS[0]) {
       write("You wish to delete a release");
       $version = isset($args[1]) ? $args[1] : null;
       if (preg_match(self::VERSION_SYNTAX, $version)) {
@@ -33,21 +94,23 @@ class Releases {
       } else {
         write([
           "Bad version argument",
-          self::writeHelp()
+          self::write_help()
         ]);
       }
-    } else if ($action === self::COMMANDS[2]) { // zip
+    // Zip action
+    } else if ($action === self::COMMANDS[2]) {
       write('You wish to make a zip');
       $version = isset($args[1]) ? $args[1] : null;
       if (preg_match(self::VERSION_SYNTAX, $version)) {
-        self::makeZipFolder($version);
+        self::make_zip_folder($version);
       } else {
         write([
           'Bad version argument',
-          self::writeHelp()
+          self::write_help()
         ]);
       }
-    } else if ($action === self::COMMANDS[1]) { // make
+    // Make action
+    } else if ($action === self::COMMANDS[1]) {
       write('You wish to make a release');
       $type = isset($args[1]) ? $args[1] : null;
       if (null !== $type && in_array($type, self::WHITELIST)) {
@@ -55,23 +118,25 @@ class Releases {
       } else {
         write([
           "Bad type argument",
-          self::writeHelp()
+          self::write_help()
         ]);
       }
+    // Shortcut make action
     } else if (in_array($action, self::WHITELIST)) {
       self::make($action);
+    // Unknown action - prints the help
     } else {
-      write(self::writeHelp());
+      write(self::write_help());
     }
   }
 
-  public static function writeHelp() {
-    self::writeMakeHelp();
+  public static function write_help() {
+    self::write_make_help();
     write();
-    self::writeDeleteHelp();
+    self::write_delete_help();
   }
 
-  private static function writeMakeHelp() {
+  private static function write_make_help() {
     write([
       '---------------------------------------',
       'Make and deploy a new release to GitLab',
@@ -95,7 +160,7 @@ class Releases {
       ]);
     }
 
-  private static function writeDeleteHelp() {
+  private static function write_delete_help() {
     write([
       '-----------------------------',
       'Delete a release from GitLab',
@@ -114,161 +179,35 @@ class Releases {
     ]);
   }
 
-
-  /**
-   * Main process of creating a new Release, using semver notation.
-   * This function should be called via a Composer script.
-   * It accepts one argument, which is the type of the release, that must be one of the following values:
-   * * `major` - A major release up the major number of your semver, and reset the minor and patch numbers, i.e. going from v0.1.3 to v1.0.0
-   * * `minor` - A minor release up the minor number of your semver, and reset the patch number, i.e. going from v0.1.3 to v0.2.0
-   * * `patch` - A patch release up the patch number of your semver, i.e. going from v0.1.3 to v0.1.4
-   * At the end of the process, you'll find a new zip file in the `releases` folder with the name `supplang_release_vX.X.X.zip`, `vX.X.X` matchin the new version number.
-   */
-	private static function make($type) {
-    write();
-    // Making release
-    if (self::checkGitStatus()) {
-      // Get the new version based on given argument (major, minor, patch)
-      $versions = self::bumpVersionNumberTo($type);
-      write([
-        "INFO ---- Last version found was ".$versions['last'],
-        "INFO ---- Release type \"$type\" bumped the version to ".$versions['current']
-      ]);
-      // Update the plugin config
-      self::updatePluginConfigVersion($versions['current']);
-      // Regenerate the plugin header file
-      exec('composer plugin-header');
-      // Make new commit
-      exec('git add .');
-      exec('git commit -m "Release new '.$type.' version - '.$versions['current'].'"');
-      write('INFO ---- New commit for the release.');
-      // Zip folder
-      $releaseZip = self::makeZipFolder($versions['current']);
-      // Add new tag with the new version
-      exec("git tag ".$versions['current']);
-      write('INFO ---- New git tag "'.$versions['current'].'" created.');
-      // Publish release
-      if ($releaseZip) {
-        $release_conf = self::getReleaseConfig();
-        // Push changes to remote
-        exec('git push && git push --tag');
-        write('SUCCESS - Release commit and tag pushed to remote branch');
-        // Upload zip file
-        $zipUpload = self::uploadReleaseZip($release_conf, $releaseZip);
-        if ($zipUpload) {
-          self::createNewRelease($release_conf, $versions['current'], $zipUpload);
-        }
-      }
-      write();
-    }
-  }
-
   private static function delete($version) {
     write("DELETED -- $version release");
   }
 
   /**
-   * Upload the given zip file at $zipPath to GitLab as a project file.
-   * @return Mixed The GitLab project relative path if file uploaded, or false if something bad happened.
-   */
-  private static function uploadReleaseZip($config, $zipPath) {
-    [$zipFolder, $zipName] = explode('/', $zipPath);
-    // Prepare the request
-    $ch = curl_init();
-    $options = [
-      CURLOPT_URL => "{$config['gitlab']['api_endpoint']}/projects/{$config['gitlab']['project_id']}/uploads",
-      CURLOPT_RETURNTRANSFER => true,
-      CURLOPT_POST => true,
-      CURLOPT_HTTPHEADER => [
-        'Content-Type: multipart/form-data',
-        "PRIVATE-TOKEN: {$config['gitlab']['private_token']}",
-        "Accept: application/json"
-      ],
-      CURLOPT_POSTFIELDS => [
-        'file' => new CurlFile($zipPath, 'application/zip', $zipName)
-      ],
-    ];
-    curl_setopt_array($ch, $options);
-    // Execute the request
-    $response = curl_exec($ch);
-
-    // TODO better error handling
-    if (!$response) {
-      write([
-        "ERROR --- Error while uploading the release zip file \"$zipName\" to GitLab...",
-        "INFO ---- Error n°".curl_errno($ch).": ".curl_error($ch)
-      ]);
-    } else {
-      write("SUCCESS - Release zip file \"$zipName\" has been uploaded to GitLab.");
-      $response = json_decode($response, JSON_UNESCAPED_SLASHES)['url'];
-    }
-    curl_close($ch);
-    return $response;
-  }
-
-  /**
-   * Create a new release for the specified $version, with the specified $uploadedZipPath asset.
-   * @return Boolean True if creation successfull, False otherwise.
-   */
-  private static function createNewRelease($config, $version, $uploadedZipPath) {
-    // Prepare the request
-    $ch = curl_init();
-    // Prepare the request payload
-    $post_data = json_encode([
-      'name' => "Release of $version",
-      'tag_name' => $version,
-      // TODO Better release note process (use external file ?)
-      'description' => "New release of Supplang $version",
-      'assets' => [
-        'links' => [
-          [
-            'name' => 'WordPress Plugin Zipfile',
-            'url' => "{$config['gitlab']['project_url']}$uploadedZipPath"
-          ]
-        ]
-      ]
-    ], JSON_UNESCAPED_SLASHES);
-
-    $options = [
-      CURLOPT_URL => "{$config['gitlab']['api_endpoint']}/projects/{$config['gitlab']['project_id']}/releases",
-      CURLOPT_RETURNTRANSFER => true,
-      CURLOPT_HTTPHEADER => [
-        'Content-Type: application/json',
-        "PRIVATE-TOKEN: {$config['gitlab']['private_token']}",
-        "Accept: application/json",
-      ],
-      CURLOPT_POST => true,
-      CURLOPT_POSTFIELDS => $post_data,
-    ];
-    curl_setopt_array($ch, $options);
-    // Execute the request
-    $response = curl_exec($ch);
-
-    if (!$response) {
-      write([
-        "ERROR --- Error while creating the $version release on GitLab...",
-        "INFO ---- Error n°".curl_errno($ch).": ".curl_error($ch)
-      ]);
-    } else {
-      write([
-        "SUCCESS - New $version release created on GitLab.",
-        "INFO ---- See it on {$config['gitlab']['project_url']}/releases"
-      ]);
-    }
-    curl_close($ch);
-    return $response;
-  }
-
-  /**
-   * Retrieve the last version number from the git tags of the repository, and up it according to the $type argument.
-   * @return Array An array with two item.
+   * Retrieves the current version number from (by order of priority):
+   * * The latest git tag that matches the semver syntax, if any (TODO)
+   * * The version number in the plugin.json file, if it exists
+   * * The version number in the package.json file, if it exists
+   * * Defaults to v0.0.0 if none of the above apply
+   *
+   * @param string $type The type of version update.
+   * @return array An array with two item.
    *                `last` contains the last version number.
    *                `current` contains the new version number.
    */
-  private static function bumpVersionNumberTo($type) {
+  private static function bump_version_number($type) {
+    $versions = array();
     exec('git tag -l', $tags); // Get git tags
-    $version['last'] = sizeof($tags) === 0 ? 'v0.0.0' : end($tags);
-    $last_array = explode('.', str_replace('v', '', $version['last']));
+    if (sizeof($tags) !== 0) {
+      $versions['last'] = end($tags);
+    } else if (file_exists('plugin.json')) {
+      $versions['last'] = get_version_from_plugin_json();
+    } else if (file_exists('package.json')) {
+      $versions['last'] = get_version_from_package_json();
+    } else {
+      $versions['last'] = 'v0.0.0';
+    }
+    $last_array = explode('.', str_replace('v', '', $versions['last']));
     $current_array = [
       'major' => (int) $last_array[0],
       'minor' => (int) $last_array[1],
@@ -290,62 +229,26 @@ class Releases {
         $current_array['patch']++;
         break;
     }
-    $version['current'] = 'v'.implode('.', $current_array);
-    return $version;
-  }
-
-  /**
-   * Creates the zip folder for the release.
-   * The resulting zip will be named after the plugin and the version number.
-   * It will contain a single directory which will contain all the plugin files.
-   * @return Mixed The relative path to the release zip, as a String, or false if something bad happened.
-   */
-  private static function makeZipFolder(string $version) {
-    $pluginName = normalize_name(loadConfigFile()->pluginName);
-    $config = self::getReleaseConfig();
-    $zipName = $version ? "{$pluginName}_{$version}.zip" : "$pluginName.zip";
-    $zipPath = "releases/$zipName";
-    try {
-      $zip = new ZipArchive();
-      if ($zip->open($zipPath, ZipArchive::CREATE) !== TRUE) {
-        throw new Exception("cannot open <$zipPath>\n");
-      }
-      foreach ($config['zip_content']['files'] as $glob) {
-        $zip->addGlob($glob, GLOB_BRACE, ['add_path' => 'supplang/']);
-      }
-      write("INFO ---- $zip->numFiles file(s) added to the zip.");
-      $zip->close();
-      write("SUCCESS - New release zip file created at $zipPath");
-    } catch (\Exception $e) {
-      write("ERROR --- Error while creating the zipfile.");
-      $zipPath = false;
-    }
-    return $zipPath;
+    $versions['current'] = 'v'.implode('.', $current_array);
+    return $versions;
   }
 
   /**
    * Update the `plugin.config` file by changing the `version` value.
    */
-  private static function updatePluginConfigVersion(string $current_version) {
-    $config = loadConfigFile();
+  private static function update_plugin_json_version(string $current_version) {
+    $config = load_plugin_json();
     $config->version = str_replace('v', '', $current_version);
     file_put_contents('plugin.json', json_encode($config, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
     write("SUCCESS - Plugin config version has been updated to $current_version");
   }
 
   /**
-   * Returns the content of the release .conf file as an associative array.
-   */
-  private static function getReleaseConfig() {
-    return parse_ini_file('.release.conf', true);
-  }
-
-  /**
    * Performs status checks on the repository.
    * Ensure that there is no unstaged changes and no unpushed commits.
-   * @return Boolean True if all checks passed, False otherwise.
+   * @return boolean True if all checks passed, False otherwise.
    */
-  private static function checkGitStatus() {
+  private static function check_git_status() {
     exec('git status --porcelain', $status);
     if (sizeof($status) !== 0 ) {
       write([

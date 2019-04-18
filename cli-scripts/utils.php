@@ -17,8 +17,16 @@ function write($text = '') {
  * Load the plugin configuration file.
  * The file MUST be named `plugin.json` and be stored at the root of your plugin folder.
  */
-function loadConfigFile() {
+function load_plugin_json() {
   return json_decode(file_get_contents('plugin.json'));
+}
+
+/**
+ * Load the package.json file.
+ * The file must exists.
+ */
+function load_package_json() {
+  return json_decode(file_get_contents('package.json'));
 }
 
 /**
@@ -35,4 +43,12 @@ function normalize_name($name, $separator = '-', $toUpper = false) {
   $name = $toUpper ? strtoupper($name) : strtolower($name);
   $name = preg_replace('~ - ~', ' ', $name);
   return preg_replace('~ ~', $separator, $name);
+}
+
+function get_version_from_package_json() {
+  return "v".load_package_json()->version;
+}
+
+function get_version_from_plugin_json() {
+  return "v".load_plugin_json()->version;
 }

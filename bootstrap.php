@@ -12,7 +12,7 @@
  */
 function nh3_mag_archive_image_block_render ( $att ) {
   ob_start();
-  include plugin_dir_path( NH3_MAG_ARCHIVE_IMAGE_BLOCK_MAIN_FILE ) . 'templates/archive-photo.php';;
+  include plugin_dir_path( NH3_MAG_ARCHIVE_BLOCKS_MAIN_FILE ) . 'templates/archive-photo.php';;
   return ob_get_clean();
 }
 
@@ -23,20 +23,20 @@ function nh3_mag_archive_image_block() {
   // Block script
   wp_register_script(
     'nh3-mag-archive-photo-block',
-    plugins_url( 'build/index.js', NH3_MAG_ARCHIVE_IMAGE_BLOCK_MAIN_FILE ),
+    plugins_url( 'build/index.js', NH3_MAG_ARCHIVE_BLOCKS_MAIN_FILE ),
     array(
       'wp-components',
       'wp-i18n'
     ),
-    filemtime( plugin_dir_path( NH3_MAG_ARCHIVE_IMAGE_BLOCK_MAIN_FILE ) . 'build/index.js' )
+    filemtime( plugin_dir_path( NH3_MAG_ARCHIVE_BLOCKS_MAIN_FILE ) . 'build/index.js' )
   );
 
   // Block CSS in the editor
   wp_register_style(
     'nh3-mag-archive-photo-block-style-editor',
-    plugins_url( 'build/css/editor.css', NH3_MAG_ARCHIVE_IMAGE_BLOCK_MAIN_FILE ),
+    plugins_url( 'build/css/editor.css', NH3_MAG_ARCHIVE_BLOCKS_MAIN_FILE ),
     array( 'wp-edit-blocks' ),
-    filemtime( plugin_dir_path( NH3_MAG_ARCHIVE_IMAGE_BLOCK_MAIN_FILE ) . 'build/css/editor.css' )
+    filemtime( plugin_dir_path( NH3_MAG_ARCHIVE_BLOCKS_MAIN_FILE ) . 'build/css/editor.css' )
   );
 
   // Block registration

@@ -1,11 +1,11 @@
 <?php
 /**
- * Plugin Name: NH3 Mag - Archive Image Block
- * Description: Add a Gutenberg block for embedding images from the NH3 archive
- * Version:     0.0.1
+ * Plugin Name: NH3 Mag - Archive Blocks
+ * Description: Add Gutenberg blocks for embedding NH3 documents in a post
+ * Version:     0.0.2
  * Author:      MEI
  * Author URI:  https://heig-vd.ch/rad/instituts/mei/
- * Text Domain: nh3-mag-archive-photo
+ * Text Domain: nh3-mag-archive-blocks
  * Domain Path: /languages
  */
 
@@ -13,7 +13,7 @@
 // DO NOT ALTER ITS CONTENT
 
 // Main plugin file path
-define('NH3_MAG_ARCHIVE_IMAGE_BLOCK_MAIN_FILE', __FILE__);
+define('NH3_MAG_ARCHIVE_BLOCKS_MAIN_FILE', __FILE__);
 
 // Bootstrap the plugin.
 require_once 'bootstrap.php';

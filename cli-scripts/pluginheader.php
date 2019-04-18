@@ -12,7 +12,7 @@ Class PluginHeader {
    */
   public static function generate() {
     write();
-    self::makeFile(loadConfigFile());
+    self::makeFile(load_plugin_json());
   }
 
   /**
