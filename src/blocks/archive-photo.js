@@ -14,10 +14,6 @@ import { Alert } from '../components/alert';
 const { __ } = wp.i18n;
 const { TextControl } = wp.components;
 
-const ctx = {
-  initialized: false
-}
-
 export default {
   title: __('Photo NH3'), // Title, displayed in the editor
   icon: 'format-image', // Icon, from WP icons
@@ -59,8 +55,11 @@ export default {
 
   /**
    * edit function
-   * Makes the markup for the editor interface.
-   * @param object props Let's you bind markup and attributes as well as other controls
+   * Generates the markup for the editor interface.
+   * @param {Object} props Let's you bind markup and attributes as well as other controls
+   * @param {String} props.className The class name for the block
+   * @param {Object} props.attributes An object containing the block's attributes
+   * @param {Function} props.setAttributes A function to update the block's attributes
    * @return JSX ECMAScript Markup for the editor
    */
   edit({ className, attributes, setAttributes }) {
@@ -70,7 +69,7 @@ export default {
       setAttributes({ loading: true });
       getEntriesByHash(documentHash)
         .then(receivedEntries)
-        .catch(catchError)
+        .catch(handleError)
     }, 250);
 
     /**
@@ -78,22 +77,21 @@ export default {
      * * See if an ID is present, in which case, refresh the data by requesting the entry that have this media ID
      * * See if a Hash is present, in which case, update the documentUrl to the supposed URL, and check that this URL points to an actual thing
      */
-
-    if (!ctx.initialized) {
+    if (!attributes.initialized) {
       if (attributes.photo_id) {
         getEntriesByMediaId(attributes.photo_id)
-          .then(result => {
-            const documentHash = result.data[ 0 ].hash_id;
-            attributes.document_hash !== documentHash && setAttributes({ document_hash: documentHash });
+          .then(entries => {
+            const documentHash = entries.data[ 0 ].hash_id;
+            setAttributes({
+              document_hash: documentHash,
+              documentUrl: `${BASE_URL}/${documentHash}`
+            });
+            return entries;
           })
-          .catch(error => console.log(error));
+          .then(receivedEntries)
+          .catch(handleError);
       }
-      if (attributes.document_hash) {
-        const documentUrl = `${BASE_URL}/${attributes.document_hash}`;
-        setAttributes({ documentUrl });
-        onChangeDocumentUrl(documentUrl);
-      }
-      ctx.initialized = true;
+      setAttributes({ initialized: true });
     }
 
     /**
@@ -185,7 +183,8 @@ export default {
         photo_thumbnail_url: thumbnail_url || null,
         photo_title: title || null,
         photo_author: userName || null,
-        photo_caption: null
+        // If the photo ID is the same as the current photo id, do not reset the caption
+        photo_caption: attributes.photo_id === id ? attributes.photo_caption : null
       });
     }
 
@@ -193,7 +192,7 @@ export default {
      * Triggered to handle API call errors.
      * @param {*} error Error raised while requesting the NH3 API
      */
-    function catchError(error) {
+    function handleError(error) {
       console.log(error);
       setAttributes({
         errorMessage: 'Error',
