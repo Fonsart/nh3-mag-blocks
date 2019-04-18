@@ -113,44 +113,60 @@
 
 /* ---- END OF SPINNER CUBE ---- */
 
-div.wp-block[data-type='nh3/archive-image'] .nh3-mag-archive-image-url-input>div {
+div.wp-block[data-type='nh3/archive-photo'] .nh3-mag-archive-photo-url-input>div {
   opacity: .5;
 }
 
-div.wp-block[data-type='nh3/archive-image'].is-selected .nh3-mag-archive-image-url-input>div,
-div.wp-block[data-type='nh3/archive-image'].is-typing .nh3-mag-archive-image-url-input>div {
+div.wp-block[data-type='nh3/archive-photo'].is-selected .nh3-mag-archive-photo-url-input>div,
+div.wp-block[data-type='nh3/archive-photo'].is-typing .nh3-mag-archive-photo-url-input>div {
   opacity: 1;
 }
 
-div.wp-block[data-type='nh3/archive-image'] figcaption.nh3-mag-integrated-picture-caption input {
+div.wp-block[data-type='nh3/archive-photo'] figcaption.nh3-mag-integrated-photo-caption input {
   text-align: center;
   border: none;
 }
 
-.nh3-mag-integrated-picture figure {
+.nh3-mag-integrated-photo figure {
   margin: 0;
+  position: relative
 }
 
-.nh3-mag-archive-image-loading {
+div.nh3-mag-integrated-photo p.nh3-mag-integrated-photo-credits {
+  text-align: right;
+  font-size: .7em;
+  font-style: italic;
+  position: absolute;
+  bottom: 5px;
+  display: inline;
+  padding: 0px 5px 0 12px;
+  background-color: white;
+  opacity: 0.9;
+  right: 0;
+  border-top-left-radius: 50px;
+  border-bottom-left-radius: 50px;
+}
+
+.nh3-mag-archive-photo-loading {
   margin: 0;
   padding: 100px 0;
 }
 
-.nh3-mag-archive-image-alert {
+.nh3-mag-archive-photo-alert {
   margin-top: 0;
   margin-bottom: 8px;
 }
 
-.nh3-mag-archive-image-loading {
+.nh3-mag-archive-photo-loading {
   text-align: center;
 }
 
-.nh3-mag-archive-image-alert {
+.nh3-mag-archive-photo-alert {
   display: flex;
   align-items: center;
 }
 
-.nh3-mag-archive-image-alert>span.content {
+.nh3-mag-archive-photo-alert>span.content {
   width: 100%;
   margin-left: 8px;
   padding: 1px 0 4px 16px;
@@ -158,19 +174,19 @@ div.wp-block[data-type='nh3/archive-image'] figcaption.nh3-mag-integrated-pictur
   border-bottom-left-radius: 20px;
 }
 
-.nh3-mag-archive-image-alert.error>span.content {
+.nh3-mag-archive-photo-alert.error>span.content {
   background-color: rgba(255, 0, 0, 0.1);
   color: red;
 }
 
-.nh3-mag-archive-image-alert>span.icon {
+.nh3-mag-archive-photo-alert>span.icon {
   display: flex;
   align-items: center;
   padding: 7px;
   border-radius: 50px;
 }
 
-.nh3-mag-archive-image-alert.error>span.icon {
+.nh3-mag-archive-photo-alert.error>span.icon {
   background-color: rgba(255, 0, 0, 0.1);
   color: red;
 }

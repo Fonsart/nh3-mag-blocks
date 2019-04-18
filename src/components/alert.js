@@ -12,10 +12,10 @@ export function Alert({ type, content = null, ...otherProps }) {
 
   switch (type) {
     case 'loading':
-      className += ' nh3-mag-archive-image-loading'
+      className += ' nh3-mag-archive-photo-loading'
       break;
     case 'error':
-      className += ' nh3-mag-archive-image-alert error'
+      className += ' nh3-mag-archive-photo-alert error'
       break;
   }
 

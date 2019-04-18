@@ -5,7 +5,7 @@
  * Version:     0.0.1
  * Author:      MEI
  * Author URI:  https://heig-vd.ch/rad/instituts/mei/
- * Text Domain: nh3-mag-archive-image
+ * Text Domain: nh3-mag-archive-photo
  * Domain Path: /languages
  */
 

@@ -8,7 +8,7 @@ import * as debounce from 'lodash.debounce';
 
 import { getEntriesByHash, getEntriesByMediaId } from '../service/entries';
 import { BASE_URL, validateEntryUrl } from '../utils';
-import { IntegratedPicture } from '../components/integrated-picture';
+import { IntegratedPhoto } from '../components/integrated-photo';
 import { Alert } from '../components/alert';
 
 const { __ } = wp.i18n;
@@ -19,7 +19,7 @@ const ctx = {
 }
 
 export default {
-  title: __('Archive Image'), // Title, displayed in the editor
+  title: __('Photo NH3'), // Title, displayed in the editor
   icon: 'format-image', // Icon, from WP icons
   category: 'nh3-mag-blocks', // Block category, where the block will be added in the editor
   /**
@@ -27,24 +27,32 @@ export default {
    * It lets you bind data from DOM elements and storage attributes
    */
   attributes: {
-    // NH3 ID of the media
-    mediaId: {
+    // NH3 ID of the photo
+    photo_id: {
       type: 'integer'
     },
-    // AWS path for generating media URL
-    mediaPath: {
+    // AWS path for generating photo URL
+    photo_path: {
       type: 'string'
     },
     // Media thumbnail URL
-    mediaThumbnailURL: {
+    photo_thumbnail_url: {
       type: 'string'
     },
-    // Hash of the NH3 entry that contains the media
-    documentHash: {
+    // Media title (if present)
+    photo_title: {
       type: 'string'
     },
-    // Integrated media caption. Written by the user and saved in the post data.
-    caption: {
+    // Media author name (if present)
+    photo_author: {
+      type: 'string'
+    },
+    // Hash of the NH3 entry that contains the photo
+    document_hash: {
+      type: 'string'
+    },
+    // Integrated photo caption. Written by the user and saved in the post data.
+    photo_caption: {
       type: 'string'
     }
   },
@@ -56,57 +64,7 @@ export default {
    * @return JSX ECMAScript Markup for the editor
    */
   edit({ className, attributes, setAttributes }) {
-    console.log('Triggering Edit method', attributes);
     let alert;
-
-    /**
-     * When initializing...
-     * * See if an ID is present, in which case, refresh the data by requesting the entry that have this media ID (and include the media also)
-     * * See if a Hash is present, in which case, update the documentUrl to the supposed URL, and check that this URL points to an actual thing
-     */
-
-    if (!ctx.initialized) {
-      if (attributes.mediaId) {
-        getEntriesByMediaId(attributes.mediaId)
-          .then(result => console.log(`Entries result for media ID ${attributes.mediaId}`, result))
-          .catch(error => console.log(error));
-      }
-      ctx.initialized = true;
-    }
-
-    if (attributes.documentHash) {
-      setAttributes({ documentUrl: `${BASE_URL}/${attributes.documentHash}` })
-    }
-
-    /**
-     * Triggered each time the user modify the value of the document URL in the block.
-     * Will check against the NH3 API if a entry exist that match the URL.
-     * If so, the entry media is requested and the required information are save in the block attributes.
-     * @param {String} newUrl The user updated URL
-     */
-    function onChangeDocumentUrl(newUrl) {
-      console.log('New url', newUrl);
-      setAttributes({ documentUrl: newUrl });
-      if (!newUrl) {
-        setAttributes({
-          errorMessage: __('Empty URL'),
-          documentHash: null
-        })
-      } else if (newUrl && !validateEntryUrl(newUrl)) {
-        setAttributes({
-          errorMessage: __('Invalid URL'),
-          documentHash: null
-        });
-        resetMediaAttributes();
-      } else {
-        const documentHash = newUrl.split('/').pop();
-        setAttributes({
-          errorMessage: null,
-          documentHash
-        });
-        debouncedGetEntriesByHash(documentHash);
-      }
-    }
 
     const debouncedGetEntriesByHash = debounce(documentHash => {
       setAttributes({ loading: true });
@@ -116,12 +74,64 @@ export default {
     }, 250);
 
     /**
+     * When initializing...
+     * * See if an ID is present, in which case, refresh the data by requesting the entry that have this media ID
+     * * See if a Hash is present, in which case, update the documentUrl to the supposed URL, and check that this URL points to an actual thing
+     */
+
+    if (!ctx.initialized) {
+      if (attributes.photo_id) {
+        getEntriesByMediaId(attributes.photo_id)
+          .then(result => {
+            const documentHash = result.data[ 0 ].hash_id;
+            attributes.document_hash !== documentHash && setAttributes({ document_hash: documentHash });
+          })
+          .catch(error => console.log(error));
+      }
+      if (attributes.document_hash) {
+        const documentUrl = `${BASE_URL}/${attributes.document_hash}`;
+        setAttributes({ documentUrl });
+        onChangeDocumentUrl(documentUrl);
+      }
+      ctx.initialized = true;
+    }
+
+    /**
+     * Triggered each time the user modify the value of the document URL in the block.
+     * Will check against the NH3 API if a entry exist that match the URL.
+     * If so, the entry media is requested and the required information are save in the block attributes.
+     * @param {String} newUrl The user updated URL
+     */
+    function onChangeDocumentUrl(newUrl) {
+      resetMediaAttributes();
+      setAttributes({ documentUrl: newUrl });
+      if (!newUrl) {
+        setAttributes({
+          errorMessage: __('Empty URL'),
+          document_hash: null
+        })
+      } else if (newUrl && !validateEntryUrl(newUrl)) {
+        setAttributes({
+          errorMessage: __('Invalid URL'),
+          document_hash: null
+        });
+      } else {
+        const documentHash = newUrl.split('/').pop();
+        setAttributes({
+          errorMessage: null,
+          document_hash: documentHash
+        });
+        debouncedGetEntriesByHash(documentHash);
+      }
+    }
+
+    /**
      * Callback to pass to IntegratedPicture component so that it can
-     * update the image caption.
-     * @param {String} caption The new image caption.
+     * update the photo caption.
+     * @param {String} caption The new photo caption.
      */
     function onChangePictureLegend(caption) {
-      setAttributes({ caption });
+      setAttributes({ photo_caption: caption });
     }
 
     /**
@@ -129,6 +139,7 @@ export default {
      * @param {Object} entries The API result object
      */
     function receivedEntries(entries) {
+      console.log('Entries received:', entries);
       setAttributes({ loading: false });
       const entry = entries.data.length === 0 ? null : entries.data[ 0 ];
       if (!entry) {
@@ -138,26 +149,43 @@ export default {
         setAttributes({ errorMessage: __('The provided URL does not contain a photo document') })
         resetMediaAttributes();
       } else {
-        console.log(`Entry result for hash ${attributes.documentHash}`, entry);
-        setAttributes({
-          mediaId: Number(entry.media.id),
-          mediaPath: entry.media.path,
-          mediaThumbnailURL: entry.media.thumbnail_url,
-          errorMessage: null
-        });
+        console.log(entry);
+        setMediaAttributes(entry);
+        setAttributes({ errorMessage: null });
       }
     }
 
     /**
-     * Reset all media related attributes.
-     * This could be useful when en error occurs and the current media should not be previews anymore.
+     * Reset all photo related attributes.
+     * This could be useful when en error occurs and the current photo should not be previews anymore.
      */
     function resetMediaAttributes() {
+      setMediaAttributes();
+    }
+
+    /**
+     * Set media related attributes based on the given entry object.
+     * Note that if `entry` or `entry.media` is null, the media attributes will be unset,
+     * meaning this method could also be called to reset the media state.
+     * @param {Object} entry An entry object as returned by the NH3 API
+     * @param {String} [entry.title] The entry title
+     * @param {Object} [entry.media] An entry's media object
+     * @param {Number} [entry.media.id] The media ID
+     * @param {String} [entry.media.path] The media path
+     * @param {String} [entry.media.thumbnail_url] The media thumbnail URL
+     * @param {Object} [entry.user] An entry's user object
+     * @param {String} [entry.user.name] The entry's user name
+     */
+    function setMediaAttributes({ title, media, user } = {}) {
+      const { id, path, thumbnail_url } = media || {};
+      const { name: userName } = user || {};
       setAttributes({
-        mediaId: null,
-        mediaPath: null,
-        mediaThumbnailURL: null,
-        caption: null
+        photo_id: id || null,
+        photo_path: path || null,
+        photo_thumbnail_url: thumbnail_url || null,
+        photo_title: title || null,
+        photo_author: userName || null,
+        photo_caption: null
       });
     }
 
@@ -166,7 +194,7 @@ export default {
      * @param {*} error Error raised while requesting the NH3 API
      */
     function catchError(error) {
-      console.log(`Entry error for hash ${attributes.documentHash}`, error);
+      console.log(error);
       setAttributes({
         errorMessage: 'Error',
         loading: false
@@ -184,7 +212,7 @@ export default {
     return (
       <div id="block-dynamic-box" class={className}>
         <TextControl
-          className="nh3-mag-archive-image-url-input"
+          className="nh3-mag-archive-photo-url-input"
           label={__('Document URL')}
           value={attributes.documentUrl}
           placeholder={`${BASE_URL}/[${__('hash_value')}]`}
@@ -192,7 +220,15 @@ export default {
           disabled={attributes.loading}
         />
         {alert}
-        {attributes.mediaThumbnailURL && <IntegratedPicture caption={attributes.caption} src={attributes.mediaThumbnailURL} onCaptionChange={onChangePictureLegend} />}
+        {attributes.photo_thumbnail_url &&
+          <IntegratedPhoto
+            caption={attributes.photo_caption}
+            src={attributes.photo_thumbnail_url}
+            onCaptionChange={onChangePictureLegend}
+            photoTitle={attributes.photo_title || __('Untitled')}
+            author={attributes.photo_author}
+          />
+        }
       </div>
     )
   },

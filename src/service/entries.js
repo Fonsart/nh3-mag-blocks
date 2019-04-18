@@ -17,7 +17,7 @@ const API_ENDPOINT = '/entries';
  * @returns {Promise} A promise of a JSON representation of the fetched entry
  */
 export function getEntriesByHash(hash) {
-  return fetch(`${API_URL}${API_ENDPOINT}?filter[hash_id]=${hash}&include=media`,
+  return fetch(`${API_URL}${API_ENDPOINT}?filter[hash_id]=${hash}&include=media,user`,
     {
       headers
     })
@@ -30,7 +30,7 @@ export function getEntriesByHash(hash) {
  * @returns {Promise} A promise of a JSON representation of the fetched entry
  */
 export function getEntriesByMediaId(mediaId) {
-  return fetch(`${API_URL}${API_ENDPOINT}?filter[media_id]=${mediaId}&include=media`,
+  return fetch(`${API_URL}${API_ENDPOINT}?filter[media_id]=${mediaId}`,
     { headers })
     .then(result => result.json());
 }
