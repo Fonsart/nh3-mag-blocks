@@ -2,9 +2,15 @@
 
 namespace CliScripts;
 
+use \Error;
+use \stdClass;
+
 include_once 'utils.php';
 
 Class PluginHeader {
+
+  const DEFAULT_FILE = 'plugin.json';
+  const PACKAGE_JSON_FILE = 'package.json';
 
   /**
    * Generates a plugin WordPress php file, using the content of the plugin.json file.
@@ -12,7 +18,7 @@ Class PluginHeader {
    */
   public static function generate() {
     write();
-    self::makeFile(load_plugin_json());
+    self::makeFile(self::loadHeaderConfig());
   }
 
   /**
@@ -21,7 +27,7 @@ Class PluginHeader {
    * and be named with the lowercase value of the `pluginName` attribute.
    */
   private static function makeFile($config) {
-    $filename = normalize_name($config->pluginName).'.php';
+    $filename = normalizeName($config->pluginName).'.php';
     $lines = [
       '<?php',
       '/**',
@@ -42,7 +48,7 @@ Class PluginHeader {
       $lines = array_merge($lines, [
         '',
         '// Main plugin file path',
-        'define(\''.normalize_name($config->pluginName, '_', true).'_MAIN_FILE\', __FILE__);',
+        'define(\''.normalizeName($config->pluginName, '_', true).'_MAIN_FILE\', __FILE__);',
       ]);
     }
 
@@ -70,6 +76,82 @@ Class PluginHeader {
     write("SUCCESS: The plugin header file \"$filename\" has been generated.");
 
     fclose($handle);
+  }
+
+  /**
+   * Load the header config file and returns it.
+   * The config can be defined two ways.
+   * 1. Using a plugin.json file that must have the following properties:
+   *   * `pluginName`
+   *   * `description`
+   *   * `version`
+   *   * `author`
+   *   * `authorUri`
+   *   * `textDomain`
+   *   * `domainPath`
+   *   * `bootstrapFilePath`
+   * 2. Using a package.json file that must have the following properties:
+   *   * `description`
+   *   * `version`
+   *   * `author`
+   *   It also must have a `wp` section which is an object with the following properties:
+   *   * `pluginName`
+   *   * `authorUri`
+   *   * `textDomain`
+   *   * `domainPath`
+   *   * `bootstrapFilePath`
+   * If none of those files are found in the project, the script will die after printing an error message.
+   * @return object The header config object with the same properties as the one expected on a plugin.json file (see above)
+   */
+  private static function loadHeaderConfig() {
+    if (file_exists(self::DEFAULT_FILE)) {
+      return loadConfigFrom(self::DEFAULT_FILE);
+    } elseif (file_exists(self::PACKAGE_JSON_FILE)) {
+
+      define('REQ_PROPS', ['description', 'version', 'author', 'wp']);
+      define('WP_REQ_PROPS', ['pluginName', 'authorUri', 'textDomain', 'domainPath', 'bootstrapFilePath']);
+
+      $errors = array();
+      $package = loadConfigFrom(self::PACKAGE_JSON_FILE);
+
+      foreach (REQ_PROPS as $prop) {
+        if (!property_exists($package, $prop)) {
+          $errors[] = "Missing `$prop` property in your package.json file!";
+        }
+      }
+
+      if (property_exists($package, 'wp')) {
+        foreach (WP_REQ_PROPS as $prop) {
+          if (!property_exists($package->wp, $prop)) {
+            $errors[] = "Missing `$prop` property in the `wp` section of your package.json file!";
+          }
+        }
+      }
+
+      if (!empty($errors)) {
+        write('ERROR --- ' . count($errors) . ' error' . (count($errors) > 1 ? 's' : '') . ' have beend detected while parsing the configuration file:');
+        foreach ($errors as $key => $error) {
+          $key++;
+          write("  $key - $error");
+        }
+        die();
+      }
+
+      $config = new stdClass();
+      $config->description = $package->description;
+      $config->version = $package->version;
+      $config->author = $package->author;
+      $config->pluginName = $package->wp->pluginName;
+      $config->authorUri = $package->wp->authorUri;
+      $config->textDomain = $package->wp->textDomain;
+      $config->domainPath = $package->wp->domainPath;
+      $config->bootstrapFilePath = $package->wp->bootstrapFilePath;
+      return $config;
+
+    } else {
+      write('ERROR --- No configuration file found in this project. Create a plugin.json or package.json file...');
+      die();
+    }
   }
 
 }

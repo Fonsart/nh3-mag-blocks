@@ -34,17 +34,18 @@ class Releases {
    * @param string $type The type of release to make
    */
   private static function make(string $type) {
-    if (self::check_git_status()) {
-      $versions = self::bump_version_number($type);
+    if (self::checkGitStatus()) {
+      $versions = self::bumpVersionNumber($type);
       write([
         "INFO ---- Last version found was ".$versions['last'],
         "INFO ---- Release type \"$type\" bumped the version to ".$versions['current']
       ]);
-      // Update the plugin config
-      self::update_plugin_json_version($versions['current']);
+      if (file_exists('plugin.json')) {
+        self::updateJsonVersion($versions['current']);
+      }
       // Update the package.json if it exists
       if (file_exists('package.json')) {
-        self::update_package_json_version($versions['current']);
+        self::updateJsonVersion($versions['current'], array('file' => 'package.json'));
       }
       // Regenerate the plugin header file
       exec('composer plugin-header');
@@ -62,20 +63,6 @@ class Releases {
   }
 
   /**
-   * Update the version number in the package.json file.
-   * The file MUST exists for this method to work.
-   * @param string $version The version value
-   */
-  private static function update_package_json_version($version) {
-    $config = load_package_json();
-    $config->version = str_replace('v', '', $version);
-    $printer = new Printer();
-    $printed = $printer->print( json_encode($config, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES), self::JSON_INDENT);
-    file_put_contents('package.json', $printed);
-    write("SUCCESS - Package.json version has been updated to $version");
-  }
-
-  /**
    * Main entry point.
    * Will execute an action based on the given parameters.
    * @param Event $event A Composer Event object
@@ -85,7 +72,7 @@ class Releases {
     // Incorrect number of arguments
     if ( sizeof($args) === 0 || sizeof($args) > 2 ) {
       write("ERROR --- You provided ".sizeof($args)." argument".(sizeof($args) === 0 ? '' : 's').".");
-      self::write_help();
+      self::writeHelp();
       exit();
     }
     $action = $args[0];
@@ -99,7 +86,7 @@ class Releases {
       } else {
         write([
           "Bad version argument",
-          self::write_help()
+          self::writeHelp()
         ]);
       }
     // Zip action
@@ -107,11 +94,11 @@ class Releases {
       write('You wish to make a zip');
       $version = isset($args[1]) ? $args[1] : null;
       if (preg_match(self::VERSION_SYNTAX, $version)) {
-        self::make_zip_folder($version);
+        self::makeZipFolder($version);
       } else {
         write([
           'Bad version argument',
-          self::write_help()
+          self::writeHelp()
         ]);
       }
     // Make action
@@ -123,7 +110,7 @@ class Releases {
       } else {
         write([
           "Bad type argument",
-          self::write_help()
+          self::writeHelp()
         ]);
       }
     // Shortcut make action
@@ -131,17 +118,17 @@ class Releases {
       self::make($action);
     // Unknown action - prints the help
     } else {
-      write(self::write_help());
+      write(self::writeHelp());
     }
   }
 
-  public static function write_help() {
-    self::write_make_help();
+  public static function writeHelp() {
+    self::writeMakeHelp();
     write();
-    self::write_delete_help();
+    self::writeDeleteHelp();
   }
 
-  private static function write_make_help() {
+  private static function writeMakeHelp() {
     write([
       '---------------------------------------',
       'Make and deploy a new release to GitLab',
@@ -165,7 +152,7 @@ class Releases {
       ]);
     }
 
-  private static function write_delete_help() {
+  private static function writeDeleteHelp() {
     write([
       '-----------------------------',
       'Delete a release from GitLab',
@@ -200,15 +187,15 @@ class Releases {
    *                `last` contains the last version number.
    *                `current` contains the new version number.
    */
-  private static function bump_version_number($type) {
+  private static function bumpVersionNumber($type) {
     $versions = array();
     exec('git tag -l', $tags); // Get git tags
     if (sizeof($tags) !== 0) {
       $versions['last'] = end($tags);
     } else if (file_exists('plugin.json')) {
-      $versions['last'] = get_version_from_plugin_json();
+      $versions['last'] = getVersionFrom('plugin.json');
     } else if (file_exists('package.json')) {
-      $versions['last'] = get_version_from_package_json();
+      $versions['last'] = getVersionFrom('package.json');
     } else {
       $versions['last'] = 'v0.0.0';
     }
@@ -239,13 +226,20 @@ class Releases {
   }
 
   /**
-   * Update the `plugin.config` file by changing the `version` value.
+   * Update the version number in the plugin.json file to the given $version number.
+   * You can change the file in which the version is updated by passing an $options array with
+   * a `file` item whose value contains the path to the file.
+   * @param string $version The version number
+   * @param array [$options] An options array
+   * @param string [$options['file']] The path to the file to update. Defaults to `plugin.json`
    */
-  private static function update_plugin_json_version(string $current_version) {
-    $config = load_plugin_json();
-    $config->version = str_replace('v', '', $current_version);
-    file_put_contents('plugin.json', json_encode($config, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
-    write("SUCCESS - Plugin config version has been updated to $current_version");
+  private static function updateJsonVersion(string $version, array $options = array('file' => 'plugin.json')) {
+    $config = loadConfigFrom($options['file']);
+    $config->version = str_replace('v', '', $version);
+    $printer = new Printer();
+    $printed = $printer->print( json_encode($config, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES), self::JSON_INDENT);
+    file_put_contents($options['file'], $printed);
+    write("SUCCESS - {$options['file']} version has been updated to $version");
   }
 
   /**
@@ -253,7 +247,7 @@ class Releases {
    * Ensure that there is no unstaged changes and no unpushed commits.
    * @return boolean True if all checks passed, False otherwise.
    */
-  private static function check_git_status() {
+  private static function checkGitStatus() {
     exec('git status --porcelain', $status);
     if (sizeof($status) !== 0 ) {
       write([

@@ -14,19 +14,18 @@ function write($text = '') {
 }
 
 /**
- * Load the plugin configuration file.
- * The file MUST be named `plugin.json` and be stored at the root of your plugin folder.
+ * Load the configuration from the given json $file name.
+ * **Note that you need to pass the _complete_ file name, e.g. with its extension.**
+ *
+ * @param string $file The name (with or without extension) of the file to load from
+ * @return array|null The config array or null if the file does not exists.
  */
-function load_plugin_json() {
-  return json_decode(file_get_contents('plugin.json'));
-}
-
-/**
- * Load the package.json file.
- * The file must exists.
- */
-function load_package_json() {
-  return json_decode(file_get_contents('package.json'));
+function loadConfigFrom($file) {
+  if (file_exists($file)) {
+    return json_decode(file_get_contents($file));
+  } else {
+    return null;
+  }
 }
 
 /**
@@ -39,16 +38,22 @@ function load_package_json() {
  * @param Boolean $toupper Wether the name sould be in lower case (false) or upper case (true). Defaults to `false`.
  * @return String The normalized name
  */
-function normalize_name($name, $separator = '-', $toUpper = false) {
+function normalizeName($name, $separator = '-', $toUpper = false) {
   $name = $toUpper ? strtoupper($name) : strtolower($name);
   $name = preg_replace('~ - ~', ' ', $name);
   return preg_replace('~ ~', $separator, $name);
 }
 
-function get_version_from_package_json() {
-  return "v".load_package_json()->version;
-}
-
-function get_version_from_plugin_json() {
-  return "v".load_plugin_json()->version;
+/**
+ * Get the current version number from the given file.
+ * The $file value should be either `plugin.json` or `package.json`.
+ * @param string $file The file to retrieve the version number from
+ * @return string|null The version number or null if the file did not exists.
+ */
+function getVersionFrom($file) {
+  if (file_exists($file)) {
+    return 'v'. loadConfigFrom($file)->version;
+  } else {
+    return null;
+  }
 }

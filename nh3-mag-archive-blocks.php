@@ -3,7 +3,7 @@
  * Plugin Name: NH3 Mag - Archive Blocks
  * Description: Add Gutenberg blocks for embedding NH3 documents in a post
  * Version:     0.0.2
- * Author:      MEI
+ * Author:      Media Engineering Institute (MEI)
  * Author URI:  https://heig-vd.ch/rad/instituts/mei/
  * Text Domain: nh3-mag-archive-blocks
  * Domain Path: /languages
