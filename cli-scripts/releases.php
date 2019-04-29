@@ -4,6 +4,8 @@ namespace CliScripts;
 
 use Composer\Script\Event;
 use Composer\Installer\PackageEvent;
+use Localheinz\Json\Printer\Printer;
+
 use \CurlFile;
 use \ZipArchive;
 
@@ -14,6 +16,7 @@ class Releases {
   const COMMANDS = ['delete', 'make', 'zip'];
   const VERSION_SYNTAX = '/v(\d\.){2}\d/';
   const WHITELIST = ['major', 'minor', 'patch'];
+  const JSON_INDENT = '  ';
 
   /**
    * Creates a new release using the semver syntax.
@@ -66,7 +69,9 @@ class Releases {
   private static function update_package_json_version($version) {
     $config = load_package_json();
     $config->version = str_replace('v', '', $version);
-    file_put_contents('package.json', json_encode($config, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+    $printer = new Printer();
+    $printed = $printer->print( json_encode($config, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES), self::JSON_INDENT);
+    file_put_contents('package.json', $printed);
     write("SUCCESS - Package.json version has been updated to $version");
   }
 
