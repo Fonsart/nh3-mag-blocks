@@ -50,7 +50,7 @@ function watchBuild() {
 }
 
 function cleanBuild() {
-    return del('build/**');
+  return del(['build/**', 'nh3-mag-archive-blocks.zip']);
 }
 
 /**
