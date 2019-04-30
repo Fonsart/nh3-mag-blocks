@@ -7,7 +7,7 @@
 import * as debounce from 'lodash.debounce';
 
 import { getEntriesByHash, getEntriesByMediaId } from '../service/entries';
-import { BASE_URL, validateEntryUrl } from '../utils';
+import { BASE_URL, validateEntryUrl, print } from '../utils';
 import { IntegratedPhoto } from '../components/integrated-photo';
 import { Alert } from '../components/alert';
 
@@ -137,7 +137,7 @@ export default {
      * @param {Object} entries The API result object
      */
     function receivedEntries(entries) {
-      console.log('Entries received:', entries);
+      print('Entries received:', entries);
       setAttributes({ loading: false });
       const entry = entries.data.length === 0 ? null : entries.data[ 0 ];
       if (!entry) {
@@ -147,7 +147,7 @@ export default {
         setAttributes({ errorMessage: __('The provided URL does not contain a photo document') })
         resetMediaAttributes();
       } else {
-        console.log(entry);
+        print(entry);
         setMediaAttributes(entry);
         setAttributes({ errorMessage: null });
       }
@@ -193,7 +193,7 @@ export default {
      * @param {*} error Error raised while requesting the NH3 API
      */
     function handleError(error) {
-      console.log(error);
+      print(error);
       setAttributes({
         errorMessage: 'Error',
         loading: false

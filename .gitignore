@@ -25,3 +25,7 @@ curl.txt
 
 # Secrets
 .nh3-api-token.json
+
+# Environment files
+src/env/*.json
+!src/env/sample.json

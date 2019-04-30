@@ -1,3 +1,5 @@
+import { ENV } from './env';
+
 export const BASE_URL = "https://dev2.notrehistoire.ch/entries";
 
 /**
@@ -17,4 +19,14 @@ export function escapeRegExp(string) {
 export function validateEntryUrl(url) {
   const format = new RegExp(`^${escapeRegExp(BASE_URL)}\/[a-zA-Z0-9]+$`);
   return format.test(url);
+}
+
+/**
+ * A wrapper around console.log that logs only in development environment
+ * @param  {...any} args The values to print to the console
+ */
+export function print(...args) {
+  if (ENV.name === 'development') {
+    console.log(...args);
+  }
 }

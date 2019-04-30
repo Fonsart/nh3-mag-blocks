@@ -1,11 +1,9 @@
-const API_TOKEN = require('../../.nh3-api-token.json');
-const API_URL = 'http://localhost:666'
-const TRUE_API_URL = 'https://dev2.notrehistoire.ch/api/v1'
+import { ENV } from '../env';
 
 // Required headers for all requests.
 const headers = (() => {
   var defaultHeaders = new Headers();
-  defaultHeaders.append("Authorization", `Bearer ${API_TOKEN}`);
+  defaultHeaders.append("Authorization", `Bearer ${ENV.apiToken}`);
   return defaultHeaders;
 })();
 
@@ -17,7 +15,7 @@ const API_ENDPOINT = '/entries';
  * @returns {Promise} A promise of a JSON representation of the fetched entry
  */
 export function getEntriesByHash(hash) {
-  return fetch(`${API_URL}${API_ENDPOINT}?filter[hash_id]=${hash}&include=media,user`,
+  return fetch(`${ENV.apiUrl}${API_ENDPOINT}?filter[hash_id]=${hash}&include=media,user`,
     {
       headers
     })
@@ -30,7 +28,7 @@ export function getEntriesByHash(hash) {
  * @returns {Promise} A promise of a JSON representation of the fetched entry
  */
 export function getEntriesByMediaId(mediaId) {
-  return fetch(`${API_URL}${API_ENDPOINT}?filter[media_id]=${mediaId}&include=media,user`,
+  return fetch(`${ENV.apiUrl}${API_ENDPOINT}?filter[media_id]=${mediaId}&include=media,user`,
     { headers })
     .then(result => result.json());
 }
