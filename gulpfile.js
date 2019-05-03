@@ -1,8 +1,8 @@
 const gulp = require('gulp');
 const del = require('del');
-const zip = require('gulp-zip');
 const rename = require('gulp-rename');
 const browsersync = require('browser-sync');
+const zip = require('gulp-vinyl-zip').zip;
 
 const pluginName = 'nh3-mag-archive-blocks';
 
@@ -15,10 +15,10 @@ function makeZip() {
   return gulp
     .src([
       '*.php',
-      '{build,build/**/*}',
+      'build/**/*',
       'languages/**/{*.po~,*.pot~}',
-      '{templates,templates/**/*}'
-    ])
+      'templates/**/*'
+    ], { base: '.' })
     .pipe(rename((file) => file.dirname = `${pluginName}/${file.dirname}`))
     .pipe(zip(`${pluginName}.zip`))
     .pipe(gulp.dest('.'))
@@ -50,7 +50,7 @@ function watchBuild() {
 }
 
 function cleanBuild() {
-  return del(['build/**', 'nh3-mag-archive-blocks.zip']);
+  return del([ 'build/**', 'nh3-mag-archive-blocks.zip' ]);
 }
 
 /**
