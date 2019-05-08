@@ -15,7 +15,8 @@ function nh3_mag_archive_blocks() {
     plugins_url( 'build/index.js', NH3_MAG_ARCHIVE_BLOCKS_MAIN_FILE ),
     array(
       'wp-components',
-      'wp-i18n'
+      'wp-i18n',
+      'wp-blocks',
     ),
     filemtime( plugin_dir_path( NH3_MAG_ARCHIVE_BLOCKS_MAIN_FILE ) . 'build/index.js' )
   );

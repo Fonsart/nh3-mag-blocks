@@ -13,8 +13,10 @@ import { EditPhoto } from '../components/edit-photo';
 import { Alert } from '../components/alert';
 import { Spinner } from '../components/spinner';
 import { UrlInput } from '../components/url-input';
+import { fromAudioTo, fromVideoTo, toAudio, toVideo } from '../transforms';
 
 const { __ } = wp.i18n;
+const { createBlock } = wp.blocks;
 
 const MEDIA_TYPE = 'photo';
 
@@ -22,6 +24,10 @@ export default {
   title: __(`${capitalize(MEDIA_TYPE)} NH3`),
   icon: 'format-image',
   category: 'nh3-mag-blocks',
+  transforms: {
+    from: [ fromAudioTo('photo'), fromVideoTo('photo') ],
+    to: [ toAudio, toVideo ]
+  },
   attributes: {
     id: // NH3 id of the photo
       { type: 'integer' },
@@ -47,6 +53,7 @@ export default {
    * @return JSX ECMAScript Markup for the editor
    */
   edit({ className, attributes, setAttributes }) {
+    console.log('Photo Edit Attributes', attributes);
 
     const debouncedGetEntriesByHash = debounce(documentHash => {
       setAttributes({ loading: true });
@@ -72,6 +79,8 @@ export default {
           })
           .then(receivedEntry)
           .catch(handleError);
+      } else if (attributes.hash) {
+        onChangeDocumentUrl(`${BASE_URL}/${attributes.hash}`);
       }
       setAttributes({ initialized: true });
     }
@@ -112,6 +121,7 @@ export default {
         setMediaAttributes(entry);
         setAttributes({ errorMessage: null });
       }
+      console.log(attributes);
     }
 
     /**
@@ -136,11 +146,11 @@ export default {
      */
     function setMediaAttributes({ title, media, user } = {}) {
       const { id, thumbnail_url } = media || {};
-      const { name } = user || {};
+      const { name, username } = user || {};
       setAttributes({
         id,
         title,
-        userName: name,
+        userName: name || username,
         fileUrl: thumbnail_url
       });
     }

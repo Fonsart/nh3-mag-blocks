@@ -42,6 +42,8 @@ export default {
    */
   edit({ className, attributes, setAttributes }) {
 
+    console.log('Audio Edit Attributes', attributes);
+
     const debouncedGetEntriesByHash = debounce(documentHash => {
       setAttributes({ loading: true });
       getEntryByHash(documentHash, MEDIA_TYPE)
@@ -52,7 +54,7 @@ export default {
     /**
      * When initializing...
      * * Check if there is an id attribute then load the entry based on this media attribute and update the component's state
-     * * Check if there is a document URL instead and try and load it
+     * * If no ID, check if there is a document Hash, and set the document URL according to this hash
      */
     if (!attributes.initialized) {
       if (attributes.id) {
@@ -66,6 +68,8 @@ export default {
           })
           .then(receivedEntry)
           .catch(handleError);
+      } else if (attributes.hash) {
+        onChangeDocumentUrl(`${BASE_URL}/${attributes.hash}`);
       }
       setAttributes({ initialized: true });
     }
@@ -130,11 +134,11 @@ export default {
      */
     function setMediaAttributes({ title, media, user } = {}) {
       const { id, file_url } = media || {};
-      const { name } = user || {};
+      const { name, username } = user || {};
       setAttributes({
         id,
         fileUrl: file_url,
-        userName: name,
+        userName: name || username,
         title: title
       });
     }

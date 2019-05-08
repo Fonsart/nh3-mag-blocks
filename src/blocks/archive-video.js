@@ -7,6 +7,7 @@ import { EditVideo } from '../components/edit-video';
 import { Spinner } from '../components/spinner';
 import { Alert } from '../components/alert';
 import { UrlInput } from '../components/url-input';
+import { fromAudioTo, toAudio, fromPhotoTo, toPhoto } from '../transforms';
 
 const { __ } = wp.i18n;
 
@@ -14,8 +15,12 @@ const MEDIA_TYPE = 'video';
 
 export default {
   title: __(`${capitalize(MEDIA_TYPE)} NH3`),
-  icon: 'format-audio',
+  icon: 'format-video',
   category: 'nh3-mag-blocks',
+  transforms: {
+    from: [ fromAudioTo('video'), fromPhotoTo('video') ],
+    to: [ toAudio, toPhoto ]
+  },
   attributes: {
     userName: // The NH3 user that posted this video
       { type: 'string' },
@@ -43,6 +48,7 @@ export default {
    * @return JSX ECMAScript Markup for the editor
    */
   edit({ className, attributes, setAttributes }) {
+    console.log('Video Edit Attributes', attributes);
 
     const debouncedGetEntriesByHash = debounce(documentHash => {
       setAttributes({ loading: true });
@@ -54,13 +60,13 @@ export default {
     /**
      * When initializing...
      * * Check if there is an id attribute then load the entry based on this media attribute and update the component's state
-     * * Check if there is a document URL instead and try and load it
+     * * If no ID, check if there is a document Hash, and set the document URL according to this hash
      */
     if (!attributes.initialized) {
       if (attributes.id) {
         getEntryByMediaId(attributes.id, MEDIA_TYPE)
           .then(entry => {
-            setAttributes({
+            entry && setAttributes({
               hash: entry.hash_id,
               documentUrl: `${BASE_URL}/${entry.hash_id}`
             });
@@ -68,6 +74,8 @@ export default {
           })
           .then(receivedEntry)
           .catch(handleError);
+      } else if (attributes.hash) {
+        onChangeDocumentUrl(`${BASE_URL}/${attributes.hash}`);
       }
       setAttributes({ initialized: true });
     }
@@ -76,19 +84,19 @@ export default {
      * Triggered when the user changes the value of the Url Input component
      * The URL is tested and if valid, the entry is fetched from the API
      * and the component's state is updated accordingly
-     * @param {string} newUrl The new document URL
+     * @param {string} documentUrl The new document URL
      */
-    function onChangeDocumentUrl(newUrl) {
-      setAttributes({ documentUrl: newUrl });
+    function onChangeDocumentUrl(documentUrl) {
+      setAttributes({ documentUrl });
       resetMediaAttributes();
-      if (!newUrl) {
+      if (!documentUrl) {
         const errorMessage = __('Empty URL');
         setAttributes({ errorMessage, hash: null })
-      } else if (newUrl && !validateEntryUrl(newUrl, 'media')) {
+      } else if (documentUrl && !validateEntryUrl(documentUrl, 'media')) {
         const errorMessage = __('Invalid URL');
         setAttributes({ errorMessage, hash: null });
       } else {
-        const hash = newUrl.split('/').pop();
+        const hash = documentUrl.split('/').pop();
         setAttributes({ errorMessage: null, hash });
         debouncedGetEntriesByHash(hash);
       }
@@ -132,11 +140,11 @@ export default {
      */
     function setMediaAttributes({ title, media, user } = {}) {
       const { id, file_url, thumbnail_url } = media || {};
-      const { name } = user || {};
+      const { name, username } = user || {};
       setAttributes({
         id,
         fileUrl: file_url,
-        userName: name,
+        userName: name || username,
         title: title,
         thumbnailUrl: thumbnail_url
       });
