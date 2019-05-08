@@ -14,12 +14,14 @@ const API_ENDPOINT = '/entries';
  * @param {String} hash The entry hash
  * @returns {Promise} A promise of a JSON representation of the fetched entry
  */
-export function getEntriesByHash(hash) {
-  return fetch(`${ENV.apiUrl}${API_ENDPOINT}?filter[hash_id]=${hash}&include=media,user`,
-    {
-      headers
-    })
-    .then(result => result.json());
+export async function getEntryByHash(hash, mediaType = null) {
+  let url = `${ENV.apiUrl}${API_ENDPOINT}?filter[hash_id]=${hash}&include=media,user`;
+  if (mediaType !== null) {
+    url = `${url}&filter[media_type]=${mediaType}`;
+  }
+  let result = await fetch(url, { headers });
+  result = await result.json();
+  return result.data[ 0 ];
 }
 
 /**
@@ -27,8 +29,12 @@ export function getEntriesByHash(hash) {
  * @param {Number} mediaId The entry's media ID
  * @returns {Promise} A promise of a JSON representation of the fetched entry
  */
-export function getEntriesByMediaId(mediaId) {
-  return fetch(`${ENV.apiUrl}${API_ENDPOINT}?filter[media_id]=${mediaId}&include=media,user`,
-    { headers })
-    .then(result => result.json());
+export async function getEntryByMediaId(mediaId, mediaType = null) {
+  let url = `${ENV.apiUrl}${API_ENDPOINT}?filter[media_id]=${mediaId}&include=media,user`;
+  if (mediaType !== null) {
+    url = `${url}&filter[media_type]=${mediaType}`;
+  }
+  let result = await fetch(url, { headers });
+  result = await result.json();
+  return result.data[ 0 ];
 }

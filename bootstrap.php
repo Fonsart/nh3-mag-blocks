@@ -6,23 +6,12 @@
  define( 'NH3_MAG_ARCHIVE_URL', 'https://dev2.notrehistoire.ch');
 
 /**
- * THIS FUNCTION IS CALLED BY WORDPRESS. DO NOT CALL IT MANUALLY.
- * Renders the template for the archive image block on the frontend.
- * The template is compiled using the block attributes in the $att param.
- */
-function nh3_mag_archive_image_block_render ( $att ) {
-  ob_start();
-  include plugin_dir_path( NH3_MAG_ARCHIVE_BLOCKS_MAIN_FILE ) . 'templates/archive-photo.php';;
-  return ob_get_clean();
-}
-
-/**
  * Register the new archive image block for the Gutenberg editor.
  */
-function nh3_mag_archive_image_block() {
+function nh3_mag_archive_blocks() {
   // Block script
   wp_register_script(
-    'nh3-mag-archive-photo-block',
+    'nh3-mag-archive-blocks',
     plugins_url( 'build/index.js', NH3_MAG_ARCHIVE_BLOCKS_MAIN_FILE ),
     array(
       'wp-components',
@@ -33,23 +22,41 @@ function nh3_mag_archive_image_block() {
 
   // Block CSS in the editor
   wp_register_style(
-    'nh3-mag-archive-photo-block-style-editor',
+    'nh3-mag-archive-blocks-style-editor',
     plugins_url( 'build/css/editor.css', NH3_MAG_ARCHIVE_BLOCKS_MAIN_FILE ),
     array( 'wp-edit-blocks' ),
     filemtime( plugin_dir_path( NH3_MAG_ARCHIVE_BLOCKS_MAIN_FILE ) . 'build/css/editor.css' )
   );
 
-  // Block registration
+  // Block registration : Archive Photo
   register_block_type( 'nh3/archive-photo', array(
-    'editor_script' => 'nh3-mag-archive-photo-block',
-    'editor_style' => 'nh3-mag-archive-photo-block-style-editor',
+    'editor_script' => 'nh3-mag-archive-blocks',
+    'editor_style' => 'nh3-mag-archive-blocks-style-editor',
     // 'style' => 'nh3-mag-archive-photo-block-style',
-    'render_callback' => 'nh3_mag_archive_image_block_render'
+    'render_callback' => load_block_template('photo')
+  ) );
+
+  // Block registration : Archive Audio
+  register_block_type( 'nh3/archive-audio', array(
+    'editor_script' => 'nh3-mag-archive-blocks',
+    'editor_style' => 'nh3-mag-archive-blocks-style-editor',
+    'render_callback' => load_block_template('audio')
+  ) );
+
+  // Block registration : Archive Video
+  register_block_type( 'nh3/archive-video', array(
+    'editor_script' => 'nh3-mag-archive-blocks',
+    'editor_style' => 'nh3-mag-archive-blocks-style-editor',
+    'render_callback' => load_block_template('video')
   ) );
 }
-add_action( 'init', 'nh3_mag_archive_image_block' );
+add_action( 'init', 'nh3_mag_archive_blocks' );
 
-function nh3_mag_block_category( $categories ) {
+/**
+ * Register a new "NH3 Blocks" block category on the $categories array.
+ * @return array The updated block categories array
+ */
+function nh3_mag_block_category( array $categories ) {
 	return array_merge(
 		$categories,
 		array(
@@ -61,3 +68,19 @@ function nh3_mag_block_category( $categories ) {
 	);
 }
 add_filter( 'block_categories', 'nh3_mag_block_category', 10, 1);
+
+/**
+ * Factory that generates a closure function to use as the render_callback value of a registered block type.
+ * The render function will load the template file named `archive-$name.php` and located in the templates directory.
+ * i.e. to load the template `archive-audio.php`, call this function passing it 'audio' as the $name param value.
+ * The template will be able to access all the block attributs with the $att array.
+ * @param string $name The name of the template file to load
+ * @return function A closure function that takes an array parameter
+ */
+function load_block_template(string $name) {
+  return function(array $att) use ($name) {
+    ob_start();
+    include plugin_dir_path( NH3_MAG_ARCHIVE_BLOCKS_MAIN_FILE ) . "templates/archive-$name.php";
+    return ob_get_clean();
+  };
+};

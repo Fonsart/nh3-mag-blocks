@@ -14,10 +14,19 @@ export function escapeRegExp(string) {
 /**
  * Test that the user provided URL is valid, comparing it with the BASE_URL.
  * @param {String} url The string to test
+ * @param {String} [entryType='media'] The entry type for which the URL should be validated. Defaults to 'media'
  * @return {Boolean}
  */
-export function validateEntryUrl(url) {
-  const format = new RegExp(`^${escapeRegExp(BASE_URL)}\/[a-zA-Z0-9]+$`);
+export function validateEntryUrl(url, entryType = 'media') {
+  let pattern;
+
+  const mediaPattern = `^${escapeRegExp(BASE_URL)}\/[a-zA-Z0-9]+$`;
+
+  if (entryType === 'media' ) {
+    pattern = mediaPattern;
+  }
+
+  const format = new RegExp(pattern);
   return format.test(url);
 }
 

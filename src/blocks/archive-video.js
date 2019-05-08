@@ -1,40 +1,36 @@
-/**
- * Simple dynamic block sample
- *
- * Creates a block that doesn't render the save side, because it's rendered on PHP
- * @see https://medium.com/@eudestwt/how-to-make-a-dynamic-wordpress-gutenberg-block-with-server-side-rending-3cb0dd6744ed
- */
 import debounce from 'lodash.debounce';
 import capitalize from 'lodash.capitalize';
 
 import { getEntryByHash, getEntryByMediaId } from '../service/entries';
 import { BASE_URL, validateEntryUrl, print } from '../utils';
-import { EditPhoto } from '../components/edit-photo';
-import { Alert } from '../components/alert';
+import { EditVideo } from '../components/edit-video';
 import { Spinner } from '../components/spinner';
+import { Alert } from '../components/alert';
 import { UrlInput } from '../components/url-input';
 
 const { __ } = wp.i18n;
 
-const MEDIA_TYPE = 'photo';
+const MEDIA_TYPE = 'video';
 
 export default {
   title: __(`${capitalize(MEDIA_TYPE)} NH3`),
-  icon: 'format-image',
+  icon: 'format-audio',
   category: 'nh3-mag-blocks',
   attributes: {
-    id: // NH3 id of the photo
-      { type: 'integer' },
-    fileUrl: // Media thumbnail URL
+    userName: // The NH3 user that posted this video
       { type: 'string' },
-    title: // Media title (if present)
+    fileUrl: // The video url
       { type: 'string' },
-    userName: // Media user name (if present)
+    thumbnailUrl: // The video thumbnail url
       { type: 'string' },
-    hash: // Hash of the NH3 entry that contains the photo
+    title: // The video title (if any)
       { type: 'string' },
-    caption: // Integrated photo caption. Written by the user and saved in the post data.
-      { type: 'string' }
+    caption: // The video caption (input by the CMS user)
+      { type: 'string' },
+    hash: // The hash id of the document
+      { type: 'string' },
+    id: // The video id
+      { type: 'integer' }
   },
 
   /**
@@ -50,15 +46,15 @@ export default {
 
     const debouncedGetEntriesByHash = debounce(documentHash => {
       setAttributes({ loading: true });
-      getEntryByHash(documentHash, 'photo')
+      getEntryByHash(documentHash, MEDIA_TYPE)
         .then(receivedEntry)
         .catch(handleError)
     }, 250);
 
     /**
      * When initializing...
-     * * See if an ID is present, in which case, refresh the data by requesting the entry that have this media ID
-     * * See if a Hash is present, in which case, update the documentUrl to the supposed URL, and check that this URL points to an actual thing
+     * * Check if there is an id attribute then load the entry based on this media attribute and update the component's state
+     * * Check if there is a document URL instead and try and load it
      */
     if (!attributes.initialized) {
       if (attributes.id) {
@@ -77,22 +73,22 @@ export default {
     }
 
     /**
-     * Triggered each time the user modify the value of the document URL in the block.
-     * Will check against the NH3 API if a entry exist that match the URL.
-     * If so, the entry media is requested and the required information are save in the block attributes.
-     * @param {String} documentUrl The user updated URL
+     * Triggered when the user changes the value of the Url Input component
+     * The URL is tested and if valid, the entry is fetched from the API
+     * and the component's state is updated accordingly
+     * @param {string} newUrl The new document URL
      */
-    function onChangeDocumentUrl(documentUrl) {
+    function onChangeDocumentUrl(newUrl) {
+      setAttributes({ documentUrl: newUrl });
       resetMediaAttributes();
-      setAttributes({ documentUrl });
-      if (!documentUrl) {
+      if (!newUrl) {
         const errorMessage = __('Empty URL');
         setAttributes({ errorMessage, hash: null })
-      } else if (documentUrl && !validateEntryUrl(documentUrl, 'media')) {
+      } else if (newUrl && !validateEntryUrl(newUrl, 'media')) {
         const errorMessage = __('Invalid URL');
         setAttributes({ errorMessage, hash: null });
       } else {
-        const hash = documentUrl.split('/').pop();
+        const hash = newUrl.split('/').pop();
         setAttributes({ errorMessage: null, hash });
         debouncedGetEntriesByHash(hash);
       }
@@ -115,8 +111,8 @@ export default {
     }
 
     /**
-     * Reset all photo related attributes.
-     * This could be useful when en error occurs and the current photo should not be previews anymore.
+     * Reset all audio related attributes.
+     * This could be useful when en error occurs and the current audio should not be previewed anymore.
      */
     function resetMediaAttributes() {
       setMediaAttributes();
@@ -130,18 +126,19 @@ export default {
      * @param {String} [entry.title] The entry title
      * @param {Object} [entry.media] An entry's media object
      * @param {Number} [entry.media.id] The media ID
-     * @param {String} [entry.media.thumbnail_url] The media thumbnail URL
+     * @param {String} [entry.media.file_url] The media file_url
      * @param {Object} [entry.user] An entry's user object
      * @param {String} [entry.user.name] The entry's user name
      */
     function setMediaAttributes({ title, media, user } = {}) {
-      const { id, thumbnail_url } = media || {};
+      const { id, file_url, thumbnail_url } = media || {};
       const { name } = user || {};
       setAttributes({
         id,
-        title,
+        fileUrl: file_url,
         userName: name,
-        fileUrl: thumbnail_url
+        title: title,
+        thumbnailUrl: thumbnail_url
       });
     }
 
@@ -152,21 +149,21 @@ export default {
     function handleError(error) {
       print(error);
       setAttributes({
-        errorMessage: 'Error',
+        errorMessage: 'Unknown Error',
         loading: false
       });
     }
 
     return (
       <div id="block-dynamic-box" class={className}>
-        <UrlInput entryType={MEDIA_TYPE} onChange={onChangeDocumentUrl} value={attributes.documentUrl} />
+        <UrlInput onChange={onChangeDocumentUrl} entryType={MEDIA_TYPE} value={attributes.documentUrl} />
         {attributes.loading && <Spinner classes={MEDIA_TYPE} />}
         {attributes.errorMessage && <Alert content={attributes.errorMessage} />}
-        {attributes.fileUrl && <EditPhoto onCaptionChange={caption => setAttributes({ caption })} {...attributes} />}
+        {attributes.fileUrl && <EditVideo onCaptionChange={(caption) => setAttributes({ caption })} {...attributes} />}
       </div>
     )
   },
   save() {
-    return null
-  },
+    return null;
+  }
 }
