@@ -1,0 +1,90 @@
+// Code courtesy of https://tobiasahlin.com/spinkit/
+$cube-color: #add8e6;
+
+.nh3-mag-archive-loading {
+  margin: 0;
+  text-align: center;
+
+  &.photo {
+    padding: 100px 0;
+  }
+
+  &.audio {
+    padding: 15px 0;
+  }
+}
+
+.sk-cube-grid {
+  height: 40px;
+  margin: auto;
+  width: 40px;
+
+  .sk-cube {
+    -webkit-animation: sk-cubeGridScaleDelay 1.3s infinite ease-in-out;
+    animation: sk-cubeGridScaleDelay 1.3s infinite ease-in-out;
+    background-color: $cube-color;
+    float: left;
+    height: 33%;
+    width: 33%;
+  }
+
+  .sk-cube1,
+  .sk-cube5,
+  .sk-cube9 {
+    -webkit-animation-delay: .2s;
+    animation-delay: .2s;
+  }
+
+  .sk-cube2,
+  .sk-cube6 {
+    -webkit-animation-delay: .3s;
+    animation-delay: .3s;
+  }
+
+  .sk-cube3 {
+    -webkit-animation-delay: .4s;
+    animation-delay: .4s;
+  }
+
+  .sk-cube4,
+  .sk-cube8 {
+    -webkit-animation-delay: .1s;
+    animation-delay: .1s;
+  }
+
+  .sk-cube7 {
+    -webkit-animation-delay: 0s;
+    animation-delay: 0s;
+  }
+
+}
+
+@-webkit-keyframes sk-cubeGridScaleDelay {
+
+  0%,
+  70%,
+  100% {
+    -webkit-transform: scale3d(1, 1, 1);
+    transform: scale3d(1, 1, 1);
+  }
+
+  35% {
+    -webkit-transform: scale3d(0, 0, 1);
+    transform: scale3d(0, 0, 1);
+  }
+}
+
+@keyframes sk-cubeGridScaleDelay {
+
+  0%,
+  70%,
+  100% {
+    -webkit-transform: scale3d(1, 1, 1);
+    transform: scale3d(1, 1, 1);
+  }
+
+  35% {
+    -webkit-transform: scale3d(0, 0, 1);
+    transform: scale3d(0, 0, 1);
+  }
+}

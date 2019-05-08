@@ -1,0 +1,17 @@
+$white: #fff;
+$black: #000;
+$red: #f00;
+$bg-error: rgba(255, 0, 0, .1);
+
+@mixin block-with-url-input {
+  .nh3-mag-archive-blocks-url-input>div {
+    opacity: .5;
+  }
+
+  &.is-selected,
+  &.is-typing {
+    .nh3-mag-archive-blocks-url-input>div {
+      opacity: 1;
+    }
+  }
+}

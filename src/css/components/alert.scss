@@ -1,0 +1,33 @@
+.nh3-mag-archive-photo-alert {
+  align-items: center;
+  display: flex;
+  margin-bottom: 8px;
+  margin-top: 0;
+
+  >.content {
+    border-bottom-left-radius: 20px;
+    border-top-left-radius: 20px;
+    margin-left: 8px;
+    padding: 1px 0 4px 16px;
+    width: 100%;
+  }
+
+  >.icon {
+    align-items: center;
+    border-radius: 50px;
+    display: flex;
+    padding: 7px;
+  }
+
+  &.error {
+    >.content {
+      background-color: $bg-error;
+      color: $red;
+    }
+
+    >.icon {
+      background-color: $bg-error;
+      color: $red;
+    }
+  }
+}

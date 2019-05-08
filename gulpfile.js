@@ -3,6 +3,9 @@ const del = require('del');
 const rename = require('gulp-rename');
 const browsersync = require('browser-sync');
 const zip = require('gulp-vinyl-zip').zip;
+const sass = require('gulp-sass');
+
+sass.compiler = require('node-sass');
 
 const pluginName = 'nh3-mag-archive-blocks';
 
@@ -29,9 +32,10 @@ function makeZip() {
  *
  * Currently only copy the css from the source forlder to the build folder.
  */
-function copyCss() {
+function buildCss() {
   return gulp
-    .src('./src/css/**/*')
+    .src('./src/css/editor.scss')
+    .pipe(sass().on('error', sass.logError))
     .pipe(gulp.dest('./build/css/'))
 }
 
@@ -39,7 +43,7 @@ function copyCss() {
  * Watch for changes on the css source folder to trigger the copyCss function.
  */
 function watchCss() {
-  return gulp.watch('src/css/**/*', copyCss);
+  return gulp.watch('src/css/**/*.scss', buildCss);
 }
 
 /**
@@ -80,7 +84,7 @@ const defaultTask = gulp.parallel(syncBrowser, watch);
 // Exports tasks to CLI
 module.exports = {
   default: defaultTask,
-  'css:build': copyCss,
+  'css:build': buildCss,
   'sync': syncBrowser,
   'watch': watch,
   'zip': makeZip,
