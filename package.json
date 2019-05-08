@@ -1,6 +1,6 @@
 {
   "name": "nh3-mag-archive-blocks",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Add Gutenberg blocks for embedding NH3 documents in a post",
   "main": "nh3-mag-archive-blocks.php",
   "scripts": {
