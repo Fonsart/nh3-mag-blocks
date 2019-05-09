@@ -1,5 +1,5 @@
 {
-  "name": "mei/nh3-mag-archive-photo-block",
+  "name": "mei/nh3-mag-photo-document-block",
   "description": "Add Gutenberg blocks for embedding NH3 documents in a post",
   "keywords": ["mei", "embed", "archive", "image", "gutenberg", "block"],
   "license": "MIT",

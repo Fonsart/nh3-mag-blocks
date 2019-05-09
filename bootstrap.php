@@ -8,7 +8,7 @@
 /**
  * Register the new archive image block for the Gutenberg editor.
  */
-function nh3_mag_archive_blocks() {
+function nh3_mag_register_blocks() {
   // Block script
   wp_register_script(
     'nh3-mag-archive-blocks',
@@ -17,6 +17,7 @@ function nh3_mag_archive_blocks() {
       'wp-components',
       'wp-i18n',
       'wp-blocks',
+      'wp-element',
     ),
     filemtime( plugin_dir_path( NH3_MAG_ARCHIVE_BLOCKS_MAIN_FILE ) . 'build/index.js' )
   );
@@ -29,29 +30,42 @@ function nh3_mag_archive_blocks() {
     filemtime( plugin_dir_path( NH3_MAG_ARCHIVE_BLOCKS_MAIN_FILE ) . 'build/css/editor.css' )
   );
 
-  // Block registration : Archive Photo
-  register_block_type( 'nh3/archive-photo', array(
+  // Block registration : Photo Document
+  register_block_type( 'nh3/photo-document', array(
     'editor_script' => 'nh3-mag-archive-blocks',
     'editor_style' => 'nh3-mag-archive-blocks-style-editor',
-    // 'style' => 'nh3-mag-archive-photo-block-style',
-    'render_callback' => load_block_template('photo')
+    // 'style' => 'nh3-mag-photo-document-block-style',
+    'render_callback' => load_block_template('photo-document')
   ) );
 
-  // Block registration : Archive Audio
-  register_block_type( 'nh3/archive-audio', array(
+  // Block registration : Audio Document
+  register_block_type( 'nh3/audio-document', array(
     'editor_script' => 'nh3-mag-archive-blocks',
     'editor_style' => 'nh3-mag-archive-blocks-style-editor',
-    'render_callback' => load_block_template('audio')
+    'render_callback' => load_block_template('audio-document')
   ) );
 
-  // Block registration : Archive Video
-  register_block_type( 'nh3/archive-video', array(
+  // Block registration : Video Document
+  register_block_type( 'nh3/video-document', array(
     'editor_script' => 'nh3-mag-archive-blocks',
     'editor_style' => 'nh3-mag-archive-blocks-style-editor',
-    'render_callback' => load_block_template('video')
+    'render_callback' => load_block_template('video-document')
   ) );
+
+  // Block registration : On Topic
+  register_block_type( 'nh3/on-topic', array(
+    'editor_script' => 'nh3-mag-archive-blocks',
+    'editor_style' => 'nh3-mag-archive-blocks-style-editor',
+    'render_callback' => load_block_template('on-topic')
+  ) );
+
+  // Block registration : Featured Image Caption
+  // register_block_type( 'nh3/featured-image-caption', array(
+  //   'editor_script' => 'nh3-mag-archive-blocks',
+  //   'editor_style' => 'nh3-mag-archive-blocks-style-editor'
+  // ) );
 }
-add_action( 'init', 'nh3_mag_archive_blocks' );
+add_action( 'init', 'nh3_mag_register_blocks' );
 
 /**
  * Register a new "NH3 Blocks" block category on the $categories array.
@@ -64,7 +78,7 @@ function nh3_mag_block_category( array $categories ) {
 			array(
 				'slug' => 'nh3-mag-blocks',
 				'title' => __( 'NH3 Blocks' ),
-			),
+      ),
 		)
 	);
 }
@@ -72,8 +86,8 @@ add_filter( 'block_categories', 'nh3_mag_block_category', 10, 1);
 
 /**
  * Factory that generates a closure function to use as the render_callback value of a registered block type.
- * The render function will load the template file named `archive-$name.php` and located in the templates directory.
- * i.e. to load the template `archive-audio.php`, call this function passing it 'audio' as the $name param value.
+ * The render function will load the template php file whose name matches the given $name param, and is located in the templates directory.
+ * i.e. to load the template `audio-document.php`, call this function passing it 'audio-document' as the $name param value.
  * The template will be able to access all the block attributs with the $att array.
  * @param string $name The name of the template file to load
  * @return function A closure function that takes an array parameter
@@ -81,7 +95,7 @@ add_filter( 'block_categories', 'nh3_mag_block_category', 10, 1);
 function load_block_template(string $name) {
   return function(array $att) use ($name) {
     ob_start();
-    include plugin_dir_path( NH3_MAG_ARCHIVE_BLOCKS_MAIN_FILE ) . "templates/archive-$name.php";
+    include plugin_dir_path( NH3_MAG_ARCHIVE_BLOCKS_MAIN_FILE ) . "templates/$name.php";
     return ob_get_clean();
   };
 };

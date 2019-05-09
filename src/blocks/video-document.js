@@ -3,31 +3,38 @@ import capitalize from 'lodash.capitalize';
 
 import { getEntryByHash, getEntryByMediaId } from '../service/entries';
 import { BASE_URL, validateEntryUrl, print } from '../utils';
+import { EditVideo } from '../components/edit-video';
 import { Spinner } from '../components/spinner';
 import { Alert } from '../components/alert';
-import { EditAudio } from '../components/edit-audio';
 import { UrlInput } from '../components/url-input';
+import { fromAudioTo, toAudio, fromPhotoTo, toPhoto } from '../transforms';
 
 const { __ } = wp.i18n;
 
-const MEDIA_TYPE = 'audio';
+const MEDIA_TYPE = 'video';
 
 export default {
-  title: __(`${capitalize(MEDIA_TYPE)} NH3`),
-  icon: 'format-audio',
+  title: __(`${capitalize(MEDIA_TYPE)} Document`),
+  icon: 'format-video',
   category: 'nh3-mag-blocks',
+  transforms: {
+    from: [ fromAudioTo('video'), fromPhotoTo('video') ],
+    to: [ toAudio, toPhoto ]
+  },
   attributes: {
-    userName:
+    userName: // The NH3 user that posted this video
       { type: 'string' },
-    fileUrl:
+    fileUrl: // The video url
       { type: 'string' },
-    title:
+    thumbnailUrl: // The video thumbnail url
       { type: 'string' },
-    caption:
+    title: // The video title (if any)
       { type: 'string' },
-    hash:
+    caption: // The video caption (input by the CMS user)
       { type: 'string' },
-    id:
+    hash: // The hash id of the document
+      { type: 'string' },
+    id: // The video id
       { type: 'integer' }
   },
 
@@ -41,8 +48,6 @@ export default {
    * @return JSX ECMAScript Markup for the editor
    */
   edit({ className, attributes, setAttributes }) {
-
-    console.log('Audio Edit Attributes', attributes);
 
     const debouncedGetEntriesByHash = debounce(documentHash => {
       setAttributes({ loading: true });
@@ -60,7 +65,7 @@ export default {
       if (attributes.id) {
         getEntryByMediaId(attributes.id, MEDIA_TYPE)
           .then(entry => {
-            setAttributes({
+            entry && setAttributes({
               hash: entry.hash_id,
               documentUrl: `${BASE_URL}/${entry.hash_id}`
             });
@@ -133,13 +138,14 @@ export default {
      * @param {String} [entry.user.name] The entry's user name
      */
     function setMediaAttributes({ title, media, user } = {}) {
-      const { id, file_url } = media || {};
+      const { id, file_url, thumbnail_url } = media || {};
       const { name, username } = user || {};
       setAttributes({
         id,
         fileUrl: file_url,
         userName: name || username,
-        title: title
+        title: title,
+        thumbnailUrl: thumbnail_url
       });
     }
 
@@ -160,7 +166,7 @@ export default {
         <UrlInput onChange={onChangeDocumentUrl} entryType={MEDIA_TYPE} value={attributes.documentUrl} />
         {attributes.loading && <Spinner classes={MEDIA_TYPE} />}
         {attributes.errorMessage && <Alert content={attributes.errorMessage} />}
-        {attributes.fileUrl && <EditAudio onCaptionChange={(caption) => setAttributes({ caption })} {...attributes} />}
+        {attributes.fileUrl && <EditVideo onCaptionChange={(caption) => setAttributes({ caption })} {...attributes} />}
       </div>
     )
   },

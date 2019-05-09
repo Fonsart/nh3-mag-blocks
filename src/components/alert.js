@@ -8,7 +8,7 @@ import { Spinner } from './spinner';
  * @param {String} [content=null] The content to display in the alert. Defaults to no content.
  */
 export function Alert({ content = null, ...otherProps }) {
-  let className = 'components-base-control nh3-mag-archive-photo-alert error';
+  let className = 'components-base-control nh3-mag-photo-document-alert error';
 
   return (
     <p class={className} {...otherProps}>

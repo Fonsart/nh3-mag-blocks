@@ -1,5 +1,5 @@
 .wp-block {
-  &[data-type='nh3/archive-photo'] {
+  &[data-type='nh3/photo-document'] {
     @include block-with-url-input;
     @import '../components/edit-photo';
   }

@@ -28,7 +28,6 @@ function transformBlock(trigger, create = null) {
     type: 'block',
     blocks: [ `nh3/archive-${trigger}` ],
     transform: ({ hash }) => {
-      console.log(hash);
       return createBlock(`nh3/archive-${create ? create : trigger}`, { hash })
     }
   }

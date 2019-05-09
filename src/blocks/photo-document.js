@@ -21,7 +21,7 @@ const { createBlock } = wp.blocks;
 const MEDIA_TYPE = 'photo';
 
 export default {
-  title: __(`${capitalize(MEDIA_TYPE)} NH3`),
+  title: __(`${capitalize(MEDIA_TYPE)} Document`),
   icon: 'format-image',
   category: 'nh3-mag-blocks',
   transforms: {
@@ -53,7 +53,6 @@ export default {
    * @return JSX ECMAScript Markup for the editor
    */
   edit({ className, attributes, setAttributes }) {
-    console.log('Photo Edit Attributes', attributes);
 
     const debouncedGetEntriesByHash = debounce(documentHash => {
       setAttributes({ loading: true });
@@ -121,7 +120,6 @@ export default {
         setMediaAttributes(entry);
         setAttributes({ errorMessage: null });
       }
-      console.log(attributes);
     }
 
     /**
