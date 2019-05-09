@@ -26,9 +26,9 @@ export function fromPhotoTo(block) {
 function transformBlock(trigger, create = null) {
   return {
     type: 'block',
-    blocks: [ `nh3/archive-${trigger}` ],
+    blocks: [ `nh3/${trigger}-document` ],
     transform: ({ hash }) => {
-      return createBlock(`nh3/archive-${create ? create : trigger}`, { hash })
+      return createBlock(`nh3/${create ? create : trigger}-document`, { hash })
     }
   }
 }

@@ -1,8 +1,8 @@
 {
-  "name": "nh3-mag-archive-blocks",
+  "name": "nh3-mag-blocks",
   "version": "1.0.0",
-  "description": "Add Gutenberg blocks for embedding NH3 documents in a post",
-  "main": "nh3-mag-archive-blocks.php",
+  "description": "Add a new set of NH3 related Gutenberg blocks",
+  "main": "nh3-mag-blocks.php",
   "scripts": {
     "start": "concurrently \"wp-scripts start\" \"gulp\" \"npm run proxy\"",
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -16,7 +16,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/MediaComem/nh3-mag-archive-blocks.git"
+    "url": "git+https://github.com/MediaComem/nh3-mag-blocks.git"
   },
   "keywords": [
     "wordpress",
@@ -27,9 +27,9 @@
   "author": "Media Engineering Institute (MEI)",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/MediaComem/nh3-mag-archive-blocks/issues"
+    "url": "https://github.com/MediaComem/nh3-mag-blocks/issues"
   },
-  "homepage": "https://github.com/MediaComem/nh3-mag-archive-blocks#readme",
+  "homepage": "https://github.com/MediaComem/nh3-mag-blocks#readme",
   "devDependencies": {
     "@wordpress/scripts": "3.1.0",
     "browser-sync": "^2.26.3",
@@ -44,9 +44,9 @@
     "node-sass": "^4.12.0"
   },
   "wp": {
-    "pluginName": "NH3 Mag - Archive Blocks",
+    "pluginName": "NH3 Mag - Blocks",
     "authorUri": "https://heig-vd.ch/rad/instituts/mei/",
-    "textDomain": "nh3-mag-archive-blocks",
+    "textDomain": "nh3-mag-blocks",
     "domainPath": "/languages",
     "bootstrapFilePath": "bootstrap.php"
   },

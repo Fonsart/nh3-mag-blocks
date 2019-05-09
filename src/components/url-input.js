@@ -9,7 +9,7 @@ export function UrlInput({ onChange, entryType, value = '' }) {
 
   return (
     <TextControl
-      className='nh3-mag-archive-blocks-url-input'
+      className='nh3-mag-blocks-url-input'
       label={__(`${capitalize(entryType)} Entry URL`)}
       placeholder={`${BASE_URL}/[${__('hash_value')}]`}
       value={value}

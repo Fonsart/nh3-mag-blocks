@@ -7,7 +7,7 @@ const sass = require('gulp-sass');
 
 sass.compiler = require('node-sass');
 
-const pluginName = 'nh3-mag-archive-blocks';
+const pluginName = 'nh3-mag-blocks';
 
 /**
  * 'zip' task function.
@@ -54,7 +54,7 @@ function watchBuild() {
 }
 
 function cleanBuild() {
-  return del([ 'build/**', 'nh3-mag-archive-blocks.zip' ]);
+  return del([ 'build/**', `${pluginName}.zip` ]);
 }
 
 /**

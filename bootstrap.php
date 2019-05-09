@@ -11,58 +11,58 @@
 function nh3_mag_register_blocks() {
   // Block script
   wp_register_script(
-    'nh3-mag-archive-blocks',
-    plugins_url( 'build/index.js', NH3_MAG_ARCHIVE_BLOCKS_MAIN_FILE ),
+    'nh3-mag-blocks',
+    plugins_url( 'build/index.js', NH3_MAG_BLOCKS_MAIN_FILE ),
     array(
       'wp-components',
       'wp-i18n',
       'wp-blocks',
       'wp-element',
     ),
-    filemtime( plugin_dir_path( NH3_MAG_ARCHIVE_BLOCKS_MAIN_FILE ) . 'build/index.js' )
+    filemtime( plugin_dir_path( NH3_MAG_BLOCKS_MAIN_FILE ) . 'build/index.js' )
   );
 
   // Block CSS in the editor
   wp_register_style(
-    'nh3-mag-archive-blocks-style-editor',
-    plugins_url( 'build/css/editor.css', NH3_MAG_ARCHIVE_BLOCKS_MAIN_FILE ),
+    'nh3-mag-blocks-style-editor',
+    plugins_url( 'build/css/editor.css', NH3_MAG_BLOCKS_MAIN_FILE ),
     array( 'wp-edit-blocks' ),
-    filemtime( plugin_dir_path( NH3_MAG_ARCHIVE_BLOCKS_MAIN_FILE ) . 'build/css/editor.css' )
+    filemtime( plugin_dir_path( NH3_MAG_BLOCKS_MAIN_FILE ) . 'build/css/editor.css' )
   );
 
   // Block registration : Photo Document
   register_block_type( 'nh3/photo-document', array(
-    'editor_script' => 'nh3-mag-archive-blocks',
-    'editor_style' => 'nh3-mag-archive-blocks-style-editor',
+    'editor_script' => 'nh3-mag-blocks',
+    'editor_style' => 'nh3-mag-blocks-style-editor',
     // 'style' => 'nh3-mag-photo-document-block-style',
     'render_callback' => load_block_template('photo-document')
   ) );
 
   // Block registration : Audio Document
   register_block_type( 'nh3/audio-document', array(
-    'editor_script' => 'nh3-mag-archive-blocks',
-    'editor_style' => 'nh3-mag-archive-blocks-style-editor',
+    'editor_script' => 'nh3-mag-blocks',
+    'editor_style' => 'nh3-mag-blocks-style-editor',
     'render_callback' => load_block_template('audio-document')
   ) );
 
   // Block registration : Video Document
   register_block_type( 'nh3/video-document', array(
-    'editor_script' => 'nh3-mag-archive-blocks',
-    'editor_style' => 'nh3-mag-archive-blocks-style-editor',
+    'editor_script' => 'nh3-mag-blocks',
+    'editor_style' => 'nh3-mag-blocks-style-editor',
     'render_callback' => load_block_template('video-document')
   ) );
 
   // Block registration : On Topic
   register_block_type( 'nh3/on-topic', array(
-    'editor_script' => 'nh3-mag-archive-blocks',
-    'editor_style' => 'nh3-mag-archive-blocks-style-editor',
+    'editor_script' => 'nh3-mag-blocks',
+    'editor_style' => 'nh3-mag-blocks-style-editor',
     'render_callback' => load_block_template('on-topic')
   ) );
 
   // Block registration : Featured Image Caption
   // register_block_type( 'nh3/featured-image-caption', array(
-  //   'editor_script' => 'nh3-mag-archive-blocks',
-  //   'editor_style' => 'nh3-mag-archive-blocks-style-editor'
+  //   'editor_script' => 'nh3-mag-blocks',
+  //   'editor_style' => 'nh3-mag-blocks-style-editor'
   // ) );
 }
 add_action( 'init', 'nh3_mag_register_blocks' );
@@ -95,7 +95,7 @@ add_filter( 'block_categories', 'nh3_mag_block_category', 10, 1);
 function load_block_template(string $name) {
   return function(array $att) use ($name) {
     ob_start();
-    include plugin_dir_path( NH3_MAG_ARCHIVE_BLOCKS_MAIN_FILE ) . "templates/$name.php";
+    include plugin_dir_path( NH3_MAG_BLOCKS_MAIN_FILE ) . "templates/$name.php";
     return ob_get_clean();
   };
 };
