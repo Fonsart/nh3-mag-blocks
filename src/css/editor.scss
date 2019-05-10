@@ -1,10 +1,11 @@
 @import './utils';
-@import './overrides';
+@import './general';
 
 @import './blocks/photo-document';
 @import './blocks/audio-document';
 @import './blocks/video-document';
 @import './blocks/featured-image-caption';
+@import './blocks/on-topic-section';
 
 @import './components/spinner';
 @import './components/url-input';

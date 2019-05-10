@@ -3,7 +3,7 @@ import capitalize from 'lodash.capitalize';
 import { __ } from '@wordpress/i18n';
 
 import { getEntryByHash, getEntryByMediaId } from '../service/entries';
-import { MEDIA_BASE_URL, print, isMediaUrl } from '../utils';
+import { MEDIA_BASE_URL, print, isMediaUrl, fromUrl } from '../utils';
 import { Spinner } from '../components/spinner';
 import { Alert } from '../components/alert';
 import { EditAudio } from '../components/edit-audio';
@@ -90,7 +90,7 @@ export default {
         const errorMessage = __('Invalid URL');
         setAttributes({ errorMessage, hash: null });
       } else {
-        const hash = documentUrl.split('/').pop();
+        const hash = fromUrl(documentUrl);
         setAttributes({ errorMessage: null, hash });
         debouncedGetEntriesByHash(hash);
       }

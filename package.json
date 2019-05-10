@@ -51,6 +51,10 @@
     "bootstrapFilePath": "bootstrap.php"
   },
   "dependencies": {
+    "@wordpress/blocks": "^6.2.4",
+    "@wordpress/components": "^7.3.1",
+    "@wordpress/editor": "^9.2.4",
+    "@wordpress/i18n": "^3.3.0",
     "lodash.capitalize": "^4.2.1",
     "lodash.debounce": "^4.0.8"
   }

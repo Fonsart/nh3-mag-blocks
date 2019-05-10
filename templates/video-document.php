@@ -1,6 +1,7 @@
 <?php if ( isset( $att['fileUrl'] ) ) : ?>
   <figure class="nh3-block-video">
-    <video controls src="<?php echo esc_url($att['fileUrl']) ?>" poster="<?php echo esc_url($att['thumbnailUrl']); ?>">
+    <video controls poster="<?php echo esc_url($att['thumbnailUrl']); ?>">
+      <source src="<?php echo esc_url($att['fileUrl']) ?>" type="<?php echo esc_url($att['mimeType']) ?>">
       Your browser does not support the <code>video</code> element.
     </video>
     <p class="credit">

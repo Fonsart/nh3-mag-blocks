@@ -5,6 +5,25 @@ export const MEDIA_BASE_URL = `${BASE_SITE_URL}/entries`;
 export const GALLERY_BASE_URL = `${BASE_SITE_URL}/galleries`;
 
 /**
+ * Required headers for all requests.
+ */
+export const API_HEADERS = (() => {
+  var defaultHeaders = new Headers();
+  defaultHeaders.append("Authorization", `Bearer ${ENV.apiToken}`);
+  return defaultHeaders;
+})();
+
+/**
+ * Returns the id part of an NH3 URL
+ * (which should be the last part of the given URL)
+ * @param {string} url An NH3 URL
+ * @returns {string} The resource id
+ */
+export function fromUrl(url) {
+  return url.split('/').pop();
+}
+
+/**
  * Return a RegEx usable version of the given string parameter.
  * @param {String} string The string to escape
  * @return {String} The escaped string
@@ -23,10 +42,25 @@ export function print(...args) {
   }
 }
 
+/**
+ * Analyzes the given URL against each expected URL.
+ * Returns an object where each property is a boolean indicating if the URL is of the specified type:
+ *
+ * Example:
+ * ```js
+ * const URL = "https://dev2.notrehistoire.ch/entries/Testing"
+ * const urlType = parseUrl(URL);
+ * console.log(urlType.isMedia); // false
+ * console.log(urlType.isGalleryUrl); // true
+ * ```
+ *
+ * @param {string} url The URL to test
+ * @returns {Object} A type object
+ */
 export function parseUrl(url) {
   return {
     isMedia: isMediaUrl(url),
-    isGalery: isGaleryLink(url)
+    isGallery: isGalleryUrl(url)
   }
 }
 

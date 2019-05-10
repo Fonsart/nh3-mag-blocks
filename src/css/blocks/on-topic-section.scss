@@ -1,0 +1,16 @@
+.wp-block-nh3-on-topic-section {
+  h2 {
+    border-bottom: thin solid $black;
+    margin-bottom: 8px;
+  }
+
+  h3 {
+    font-size: 1.1em;
+  }
+
+  div {
+    &.components-notice {
+      margin-bottom: 8px;
+    }
+  }
+}

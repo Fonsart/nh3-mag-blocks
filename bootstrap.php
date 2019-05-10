@@ -18,6 +18,7 @@ function nh3_mag_register_blocks() {
       'wp-i18n',
       'wp-blocks',
       'wp-element',
+      'wp-editor',
     ),
     filemtime( plugin_dir_path( NH3_MAG_BLOCKS_MAIN_FILE ) . 'build/index.js' )
   );
@@ -53,17 +54,25 @@ function nh3_mag_register_blocks() {
   ) );
 
   // Block registration : On Topic
-  register_block_type( 'nh3/on-topic', array(
+  register_block_type( 'nh3/on-topic-section', array(
     'editor_script' => 'nh3-mag-blocks',
     'editor_style' => 'nh3-mag-blocks-style-editor',
-    'render_callback' => load_block_template('on-topic')
+    'render_callback' => load_block_template('on-topic-section')
   ) );
 
-  // Block registration : Featured Image Caption
-  // register_block_type( 'nh3/featured-image-caption', array(
-  //   'editor_script' => 'nh3-mag-blocks',
-  //   'editor_style' => 'nh3-mag-blocks-style-editor'
-  // ) );
+  // Block registration : On Topic NH3 Links
+  register_block_type( 'nh3/on-topic-nh3-links', array(
+    'editor_script' => 'nh3-mag-blocks',
+    'editor_style' => 'nh3-mag-blocks-style-editor',
+    'render_callback' => load_block_template('on-topic-nh3')
+  ) );
+
+  // Block registration : On Topic RTS/SRF/RSI/RTR Links
+  register_block_type( 'nh3/on-topic-rts-links', array(
+    'editor_script' => 'nh3-mag-blocks',
+    'editor_style' => 'nh3-mag-blocks-style-editor',
+    'render_callback' => load_block_template('on-topic-rts')
+  ) );
 }
 add_action( 'init', 'nh3_mag_register_blocks' );
 
@@ -93,7 +102,7 @@ add_filter( 'block_categories', 'nh3_mag_block_category', 10, 1);
  * @return function A closure function that takes an array parameter
  */
 function load_block_template(string $name) {
-  return function(array $att) use ($name) {
+  return function(array $att, $content) use ($name) {
     ob_start();
     include plugin_dir_path( NH3_MAG_BLOCKS_MAIN_FILE ) . "templates/$name.php";
     return ob_get_clean();
