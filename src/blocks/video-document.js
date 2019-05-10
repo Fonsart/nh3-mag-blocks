@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import debounce from 'lodash.debounce';
 import capitalize from 'lodash.capitalize';
 
@@ -9,8 +10,6 @@ import { Alert } from '../components/alert';
 import { UrlInput } from '../components/url-input';
 import { fromAudioTo, toAudio, fromPhotoTo, toPhoto } from '../transforms';
 
-const { __ } = wp.i18n;
-
 const MEDIA_TYPE = 'video';
 
 export default {
@@ -20,6 +19,9 @@ export default {
   transforms: {
     from: [ fromAudioTo('video'), fromPhotoTo('video') ],
     to: [ toAudio, toPhoto ]
+  },
+  supports: {
+    customClassName: false
   },
   attributes: {
     userName: // The NH3 user that posted this video
@@ -35,7 +37,9 @@ export default {
     hash: // The hash id of the document
       { type: 'string' },
     id: // The video id
-      { type: 'integer' }
+      { type: 'integer' },
+    mimeType: // The video MIME type
+      { type: 'string' }
   },
 
   /**
@@ -138,14 +142,15 @@ export default {
      * @param {String} [entry.user.name] The entry's user name
      */
     function setMediaAttributes({ title, media, user } = {}) {
-      const { id, file_url, thumbnail_url } = media || {};
+      const { id, file_url, thumbnail_url, mime_type } = media || {};
       const { name, username } = user || {};
       setAttributes({
         id,
         fileUrl: file_url,
         userName: name || username,
         title: title,
-        thumbnailUrl: thumbnail_url
+        thumbnailUrl: thumbnail_url,
+        mimeType: mime_type
       });
     }
 
@@ -162,8 +167,8 @@ export default {
     }
 
     return (
-      <div id="block-dynamic-box" class={className}>
-        <UrlInput onChange={onChangeDocumentUrl} entryType={MEDIA_TYPE} value={attributes.documentUrl} />
+      <div class='nh3-mag-audio-document-edit'>
+        <UrlInput className={attributes.errorMessage ? 'errored' : ''} onChange={onChangeDocumentUrl} entryType={MEDIA_TYPE} value={attributes.documentUrl} />
         {attributes.loading && <Spinner classes={MEDIA_TYPE} />}
         {attributes.errorMessage && <Alert content={attributes.errorMessage} />}
         {attributes.fileUrl && <EditVideo onCaptionChange={(caption) => setAttributes({ caption })} {...attributes} />}

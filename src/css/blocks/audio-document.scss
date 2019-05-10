@@ -1,10 +1,8 @@
-.wp-block {
-  &[data-type='nh3/audio-document'] {
-    audio {
-      width: 100%;
-    }
-
-    @include block-with-url-input;
-    @import '../components/edit-audio';
+[data-type='nh3/audio-document'] {
+  audio {
+    width: 100%;
   }
+
+  @include block-with-url-input;
+  @import '../components/edit-audio';
 }

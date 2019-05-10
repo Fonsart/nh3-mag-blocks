@@ -1,11 +1,9 @@
-.wp-block {
-  &[data-type='nh3/video-document'] {
-    video {
-      background-color: $black;
-      width: 100%;
-    }
-
-    @include block-with-url-input;
-    @import '../components/edit-video';
+[data-type='nh3/video-document'] {
+  video {
+    background-color: $black;
+    width: 100%;
   }
+
+  @include block-with-url-input;
+  @import '../components/edit-video';
 }

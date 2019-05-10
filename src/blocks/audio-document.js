@@ -1,5 +1,6 @@
 import debounce from 'lodash.debounce';
 import capitalize from 'lodash.capitalize';
+import { __ } from '@wordpress/i18n';
 
 import { getEntryByHash, getEntryByMediaId } from '../service/entries';
 import { BASE_URL, validateEntryUrl, print } from '../utils';
@@ -8,14 +9,15 @@ import { Alert } from '../components/alert';
 import { EditAudio } from '../components/edit-audio';
 import { UrlInput } from '../components/url-input';
 
-const { __ } = wp.i18n;
-
 const MEDIA_TYPE = 'audio';
 
 export default {
   title: __(`${capitalize(MEDIA_TYPE)} Document`),
   icon: 'format-audio',
   category: 'nh3-mag-blocks',
+  supports: {
+    customClassName: false
+  },
   attributes: {
     userName:
       { type: 'string' },
@@ -154,8 +156,8 @@ export default {
     }
 
     return (
-      <div id="block-dynamic-box" class={className}>
-        <UrlInput onChange={onChangeDocumentUrl} entryType={MEDIA_TYPE} value={attributes.documentUrl} />
+      <div class="nh3-mag-audio-document-edit">
+        <UrlInput className={attributes.errorMessage ? 'errored' : ''} onChange={onChangeDocumentUrl} entryType={MEDIA_TYPE} value={attributes.documentUrl} />
         {attributes.loading && <Spinner classes={MEDIA_TYPE} />}
         {attributes.errorMessage && <Alert content={attributes.errorMessage} />}
         {attributes.fileUrl && <EditAudio onCaptionChange={(caption) => setAttributes({ caption })} {...attributes} />}

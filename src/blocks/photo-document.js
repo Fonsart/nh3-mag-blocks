@@ -4,6 +4,7 @@
  * Creates a block that doesn't render the save side, because it's rendered on PHP
  * @see https://medium.com/@eudestwt/how-to-make-a-dynamic-wordpress-gutenberg-block-with-server-side-rending-3cb0dd6744ed
  */
+import { __ } from '@wordpress/i18n';
 import debounce from 'lodash.debounce';
 import capitalize from 'lodash.capitalize';
 
@@ -15,9 +16,6 @@ import { Spinner } from '../components/spinner';
 import { UrlInput } from '../components/url-input';
 import { fromAudioTo, fromVideoTo, toAudio, toVideo } from '../transforms';
 
-const { __ } = wp.i18n;
-const { createBlock } = wp.blocks;
-
 const MEDIA_TYPE = 'photo';
 
 export default {
@@ -27,6 +25,9 @@ export default {
   transforms: {
     from: [ fromAudioTo('photo'), fromVideoTo('photo') ],
     to: [ toAudio, toVideo ]
+  },
+  supports: {
+    customClassName: false
   },
   attributes: {
     id: // NH3 id of the photo
@@ -166,8 +167,8 @@ export default {
     }
 
     return (
-      <div id="block-dynamic-box" class={className}>
-        <UrlInput entryType={MEDIA_TYPE} onChange={onChangeDocumentUrl} value={attributes.documentUrl} />
+      <div class='nh3-mag-photo-document-edit'>
+        <UrlInput className={attributes.errorMessage ? 'errored' : ''} entryType={MEDIA_TYPE} onChange={onChangeDocumentUrl} value={attributes.documentUrl} />
         {attributes.loading && <Spinner classes={MEDIA_TYPE} />}
         {attributes.errorMessage && <Alert content={attributes.errorMessage} />}
         {attributes.fileUrl && <EditPhoto onCaptionChange={caption => setAttributes({ caption })} {...attributes} />}

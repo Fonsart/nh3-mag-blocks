@@ -1,7 +1,6 @@
 $white: #fff;
 $black: #000;
-$red: #f00;
-$bg-error: rgba(255, 0, 0, .1);
+$error-color: #d94f4f;
 
 @mixin block-with-url-input {
   .nh3-mag-blocks-url-input>div {

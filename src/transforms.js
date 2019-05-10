@@ -1,4 +1,4 @@
-const { createBlock } = wp.blocks;
+import { createBlock } from '@wordpress/blocks';
 
 export const toVideo = transformBlock('video');
 export const toPhoto = transformBlock('photo');

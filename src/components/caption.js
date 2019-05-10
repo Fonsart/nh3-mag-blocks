@@ -1,5 +1,5 @@
-const { __ } = wp.i18n;
-const { TextControl } = wp.components;
+import { __ } from '@wordpress/i18n';
+import { TextControl } from '@wordpress/components';
 
 export function Caption({ onChange, value, type = 'document' }) {
   const placeholder = __(`Write a caption for this ${type}`);
