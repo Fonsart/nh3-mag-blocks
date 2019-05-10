@@ -1,6 +1,8 @@
 import { ENV } from './env';
 
-export const BASE_URL = "https://dev2.notrehistoire.ch/entries";
+export const BASE_SITE_URL = 'https://dev2.notrehistoire.ch';
+export const MEDIA_BASE_URL = `${BASE_SITE_URL}/entries`;
+export const GALLERY_BASE_URL = `${BASE_SITE_URL}/galleries`;
 
 /**
  * Return a RegEx usable version of the given string parameter.
@@ -12,25 +14,6 @@ export function escapeRegExp(string) {
 }
 
 /**
- * Test that the user provided URL is valid, comparing it with the BASE_URL.
- * @param {String} url The string to test
- * @param {String} [entryType='media'] The entry type for which the URL should be validated. Defaults to 'media'
- * @return {Boolean}
- */
-export function validateEntryUrl(url, entryType = 'media') {
-  let pattern;
-
-  const mediaPattern = `^${escapeRegExp(BASE_URL)}\/[a-zA-Z0-9]+$`;
-
-  if (entryType === 'media' ) {
-    pattern = mediaPattern;
-  }
-
-  const format = new RegExp(pattern);
-  return format.test(url);
-}
-
-/**
  * A wrapper around console.log that logs only in development environment
  * @param  {...any} args The values to print to the console
  */
@@ -38,4 +21,27 @@ export function print(...args) {
   if (ENV.name === 'development') {
     console.log(...args);
   }
+}
+
+export function parseUrl(url) {
+  return {
+    isMedia: isMediaUrl(url),
+    isGalery: isGaleryLink(url)
+  }
+}
+
+/**
+ * Test that the given URL matches the expected format of a NH3 media URL.
+ * @param {string} url The URL to test
+ * @return {Boolean}
+ */
+export function isMediaUrl(url) {
+  const pattern = new RegExp(`^${escapeRegExp(MEDIA_BASE_URL)}\/[a-zA-Z0-9]+$`);
+  return pattern.test(url);
+}
+
+export function isGalleryUrl(url) {
+  // Slug validation Regex courtesy of https://www.regextester.com/96861
+  const pattern = new RegExp(`^${escapeRegExp(GALLERY_BASE_URL)}\/[a-z0-9]+(?:-[a-z0-9]+)*$`);
+  return pattern.test(url);
 }

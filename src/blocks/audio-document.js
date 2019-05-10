@@ -3,7 +3,7 @@ import capitalize from 'lodash.capitalize';
 import { __ } from '@wordpress/i18n';
 
 import { getEntryByHash, getEntryByMediaId } from '../service/entries';
-import { BASE_URL, validateEntryUrl, print } from '../utils';
+import { MEDIA_BASE_URL, print, isMediaUrl } from '../utils';
 import { Spinner } from '../components/spinner';
 import { Alert } from '../components/alert';
 import { EditAudio } from '../components/edit-audio';
@@ -62,14 +62,14 @@ export default {
           .then(entry => {
             setAttributes({
               hash: entry.hash_id,
-              documentUrl: `${BASE_URL}/${entry.hash_id}`
+              documentUrl: `${MEDIA_BASE_URL}/${entry.hash_id}`
             });
             return entry;
           })
           .then(receivedEntry)
           .catch(handleError);
       } else if (attributes.hash) {
-        onChangeDocumentUrl(`${BASE_URL}/${attributes.hash}`);
+        onChangeDocumentUrl(`${MEDIA_BASE_URL}/${attributes.hash}`);
       }
       setAttributes({ initialized: true });
     }
@@ -86,7 +86,7 @@ export default {
       if (!documentUrl) {
         const errorMessage = __('Empty URL');
         setAttributes({ errorMessage, hash: null })
-      } else if (documentUrl && !validateEntryUrl(documentUrl, 'media')) {
+      } else if (documentUrl && !isMediaUrl(documentUrl)) {
         const errorMessage = __('Invalid URL');
         setAttributes({ errorMessage, hash: null });
       } else {
