@@ -101,7 +101,7 @@ function filterResourceData(resourceData) {
   } else if (!resourceData.media_type) {
     return new Resource(resourceData.title, resourceData.cover ? resourceData.cover.url : null, resourceData.user, __('Gallery'));
   } else if (resourceData.media_type === 'video') {
-    return new Resource(resourceData.title, resourceData.media.thumbnail_url, resourceData.user, __('Video'));
+    return new Resource(resourceData.title, resourceData.cover_url, resourceData.user, __('Video'));
   } else if (resourceData.media_type === 'audio') {
     return new Resource(resourceData.title, resourceData.cover_url, resourceData.user, __('Audio'));
   } else if (resourceData.media_type === 'photo') {

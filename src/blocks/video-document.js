@@ -142,7 +142,7 @@ export default {
      * @param {Object} [entry.user] An entry's user object
      * @param {String} [entry.user.name] The entry's user name
      */
-    function setMediaAttributes({ title, media, user } = {}) {
+    function setMediaAttributes({ title, cover_url, media, user } = {}) {
       const { id, file_url, thumbnail_url, mime_type } = media || {};
       const { name, username } = user || {};
       setAttributes({
@@ -150,7 +150,7 @@ export default {
         fileUrl: file_url,
         userName: name || username,
         title: title,
-        thumbnailUrl: thumbnail_url,
+        thumbnailUrl: cover_url || thumbnail_url,
         mimeType: mime_type
       });
     }
