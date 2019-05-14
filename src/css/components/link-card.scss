@@ -1,0 +1,63 @@
+.nh3-mag-blocks-link-card {
+  $thumbnail-bg-color: rgba(0, 0, 0, .05);
+  $box-shadow-color: rgba(0, 0, 0, .1);
+
+  border-radius: 3px;
+  box-shadow: .5px .5px 3px 1px $box-shadow-color;
+  display: flex;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
+  font-size: 13px;
+  padding: 8px;
+
+  figure {
+    align-items: center;
+    display: flex;
+    flex-basis: 150px;
+    flex-shrink: 0;
+    margin: 0;
+    max-height: 54px;
+    overflow: hidden;
+  }
+
+  .infos {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    margin-left: 16px;
+    min-width: 0;
+    position: relative;
+
+    .title {
+      display: inline-block;
+      flex: 1;
+      margin: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .user {
+      align-items: center;
+      display: flex;
+      margin-bottom: 3px;
+      margin-top: auto;
+
+      img {
+        border-radius: 18px;
+        max-height: 18px;
+        max-width: 18px;
+      }
+
+      span {
+        margin-left: 8px;
+      }
+    }
+
+    .type {
+      bottom: 0;
+      font-style: italic;
+      position: absolute;
+      right: 0;
+    }
+  }
+}

@@ -3,7 +3,8 @@ import debounce from 'lodash.debounce';
 import capitalize from 'lodash.capitalize';
 
 import { getEntryByHash, getEntryByMediaId } from '../service/entries';
-import { MEDIA_BASE_URL, print, isMediaUrl } from '../utils';
+import { print } from '../utils/misc';
+import { MEDIA_BASE_URL, isMediaUrl } from '../utils/link-management';
 import { EditVideo } from '../components/edit-video';
 import { Spinner } from '../components/spinner';
 import { Alert } from '../components/alert';

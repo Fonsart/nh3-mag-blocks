@@ -2,7 +2,7 @@ import { __ } from '@wordpress/i18n';
 import { TextControl } from '@wordpress/components';
 import capitalize from 'lodash.capitalize';
 
-import { MEDIA_BASE_URL } from '../utils';
+import { MEDIA_BASE_URL } from '../utils/link-management';
 
 export function UrlInput({ onChange, entryType, value = '', className = null }) {
 

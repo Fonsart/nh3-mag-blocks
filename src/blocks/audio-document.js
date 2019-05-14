@@ -3,7 +3,8 @@ import capitalize from 'lodash.capitalize';
 import { __ } from '@wordpress/i18n';
 
 import { getEntryByHash, getEntryByMediaId } from '../service/entries';
-import { MEDIA_BASE_URL, print, isMediaUrl, fromUrl } from '../utils';
+import { print, fromUrl } from '../utils/misc';
+import { MEDIA_BASE_URL, isMediaUrl } from '../utils/link-management';
 import { Spinner } from '../components/spinner';
 import { Alert } from '../components/alert';
 import { EditAudio } from '../components/edit-audio';

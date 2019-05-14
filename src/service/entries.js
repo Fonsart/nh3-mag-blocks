@@ -1,5 +1,6 @@
 import { ENV } from '../env';
-import { API_HEADERS } from '../utils';
+import { API_HEADERS } from '../utils/api';
+import { getUserById } from './users';
 
 const ENTRY_ENDPOINT = '/entries';
 
@@ -9,12 +10,13 @@ const ENTRY_ENDPOINT = '/entries';
  * @returns {Promise} A promise of a JSON representation of the fetched entry
  */
 export async function getEntryByHash(hash, mediaType = null) {
-  let url = `${ENV.apiUrl}${ENTRY_ENDPOINT}?filter[hash_id]=${hash}&include=media,user`;
+  let url = `${ENV.apiUrl}${ENTRY_ENDPOINT}?filter[hash_id]=${hash}&include=media,user,meta`;
   if (mediaType !== null) {
     url = `${url}&filter[media_type]=${mediaType}`;
   }
   let result = await fetch(url, { headers: API_HEADERS });
   result = await result.json();
+  // return result.data.map(getUserById)[ 0 ];
   return result.data[ 0 ];
 }
 

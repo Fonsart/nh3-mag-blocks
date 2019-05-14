@@ -1,12 +1,11 @@
 import { __ } from '@wordpress/i18n';
 import { TextareaControl } from '@wordpress/components';
-import debounce from 'lodash.debounce';
-import { LinkCard } from '../components/link-card';
-import { getEntryByHash } from '../service/entries';
-import { fromUrl, parseUrl } from '../utils';
-import { getGalleryBySlug } from '../service/galleries';
 
-let dataCache;
+import { LinkContent } from '../components/link-content';
+import { uniqLink } from '../utils/misc';
+import { AreaLabel } from '../components/area-label';
+import { getLinkContentPromise } from '../utils/link-management';
+
 
 export default {
   title: __('NH3 Links'),
@@ -21,44 +20,36 @@ export default {
       { type: 'string' }
   },
   edit({ className, attributes, setAttributes }) {
-    console.log('edit triggered');
 
-    const setData = dataObj => {
-      console.log('serialization of dataObj', JSON.stringify(dataObj));
-      setAttributes({ data: JSON.stringify(dataObj) })
-    };
+    // Utility to set the component data serialization
+    const setData = dataObj => setAttributes({ data: JSON.stringify(dataObj) });
     // Initialize the data to an empty array to avoid a JSON parser error when no data
     const getData = () => attributes.data ? JSON.parse(attributes.data) : [];
 
-    let dataObj = getData();
-    dataCache = dataCache || getData();
+    let linksData = getData();
 
-    async function onLinkListChange(content) {
-      console.log(content);
-      content.split(/\n/).forEach(link => {
-        const linkType = parseUrl(link);
-        if (linkType.isMedia) {
-          getEntryByHash(fromUrl(link))
-            .then(media => dataObj.push(media))
-            .then(() => setData(dataObj));
-        } else if (linkType.isGallery) {
-          getGalleryBySlug(fromUrl(link))
-            .then(gallery => dataObj.push(gallery));
-        } else {
-          dataObj.push({
-            error: __('Invalid URL')
-          });
-        }
-      });
-      // setData(dataObj);
+    if (!attributes.init) {
+      // When init, rebuild the textarea content from the component's data
+      setAttributes({
+        linkString: linksData.map(link => link.url).join('\n'),
+        init: true
+      })
     }
 
-    console.log(dataObj)
+    async function onLinkStringChange(value) {
+      const links = uniqLink(value.split(/\n/));
+      setAttributes({ linkString: links.join('\n') });
+      let apiResults = await Promise.all(links.filter(Boolean).map(getLinkContentPromise));
+      setData(apiResults);
+    }
+
+    console.log(linksData);
+
     return (
       <div className={className}>
         <h3>{__('ourHistory')}</h3>
-        <TextareaControl onChange={onLinkListChange} label={__('Paste one link per line')} />
-        {dataObj.map(link => <LinkCard link={link} />)}
+        <TextareaControl onChange={onLinkStringChange} label={<AreaLabel />} value={attributes.linkString} />
+        {linksData.map(content => <LinkContent value={content} />)}
       </div>
     )
   },
