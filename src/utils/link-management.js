@@ -1,9 +1,10 @@
 import { __ } from '@wordpress/i18n';
 
-import { fromUrl, escapeRegExp } from '../utils/misc';
+import { print, fromUrl, escapeRegExp } from '../utils/misc';
 import { getEntryByHash } from '../service/entries';
 import { getGalleryBySlug } from '../service/galleries';
 import { Resource } from '../models/resource';
+import { withUser } from '../service/users';
 
 export const BASE_SITE_URL = 'https://dev2.notrehistoire.ch';
 export const MEDIA_BASE_URL = `${BASE_SITE_URL}/entries`;
@@ -27,9 +28,9 @@ export async function getLinkContentPromise(url) {
   const urlType = parseUrl(url);
   // Get the promise based on the url
   if (urlType.isMedia) {
-    data.result = await getEntryByHash(fromUrl(url))
+    data.result = await getEntryByHash(fromUrl(url), null, 'media', 'meta').then(withUser)
   } else if (urlType.isGallery) {
-    data.result = await getGalleryBySlug(fromUrl(url))
+    data.result = await getGalleryBySlug(fromUrl(url)).then(withUser)
   } else {
     data.result = {
       error: __('Invalid URL')
@@ -92,6 +93,7 @@ export function isGalleryUrl(url) {
  * @returns {Resource|Object|null}
  */
 function filterResourceData(resourceData) {
+  print(resourceData);
   if (!resourceData) {
     return null;
     // Return the resource if it's an error

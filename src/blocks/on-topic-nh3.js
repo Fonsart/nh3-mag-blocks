@@ -36,6 +36,12 @@ export default {
       })
     }
 
+    /**
+     * When the content of the text area changes,
+     * Tests each line of the content and fetch the corresponding resource if necessary.
+     * Then, set the component's data with the resulting data structure.
+     * @param {string} value Content of the textarea
+     */
     async function onLinkStringChange(value) {
       const links = uniqLink(value.split(/\n/));
       setAttributes({ linkString: links.join('\n') });
@@ -43,13 +49,11 @@ export default {
       setData(apiResults);
     }
 
-    console.log(linksData);
-
     return (
       <div className={className}>
         <h3>{__('ourHistory')}</h3>
         <TextareaControl onChange={onLinkStringChange} label={<AreaLabel />} value={attributes.linkString} />
-        {linksData.map(content => <LinkContent value={content} />)}
+        {linksData.map(link => <LinkContent value={link} />)}
       </div>
     )
   },

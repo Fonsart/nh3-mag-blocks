@@ -14,7 +14,9 @@
 
   div {
     &.components-notice {
-      margin-bottom: $margin-bottom;
+      &.is-info {
+        margin-bottom: $margin-bottom;
+      }
     }
   }
 }

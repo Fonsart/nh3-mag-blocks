@@ -5,9 +5,9 @@
  * i.e. if you want to display the icon named `dashicons-external`,
  * pass the `name` property the value `external`.
  * @see https://developer.wordpress.org/resource/dashicons/
- * @param {Object} param0 Component properties
- * @param {String} name The dash icon name
+ * @param {Object} props Component properties
+ * @param {String} props.name The dash icon name
  */
-export function DashIcon({name}) {
-  return <span class={"dashicons dashicons-" + name}></span>
+export function DashIcon({ name }) {
+  return <span class={`dashicons dashicons-${name}`}></span>
 }

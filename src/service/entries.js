@@ -1,22 +1,23 @@
 import { ENV } from '../env';
 import { API_HEADERS } from '../utils/api';
-import { getUserById } from './users';
 
 const ENTRY_ENDPOINT = '/entries';
+
+const DEFAULT_INCLUDE = [ 'media', 'user', 'meta' ];
 
 /**
  * Fetch an NH3 entry based on its hash value, including its media and its user.
  * @param {String} hash The entry hash
  * @returns {Promise} A promise of a JSON representation of the fetched entry
  */
-export async function getEntryByHash(hash, mediaType = null) {
-  let url = `${ENV.apiUrl}${ENTRY_ENDPOINT}?filter[hash_id]=${hash}&include=media,user,meta`;
+export async function getEntryByHash(hash, mediaType = null, ...include) {
+  include = include.length > 0 ? include : DEFAULT_INCLUDE;
+  let url = `${ENV.apiUrl}${ENTRY_ENDPOINT}?filter[hash_id]=${hash}&include=${include.join(',')}`;
   if (mediaType !== null) {
     url = `${url}&filter[media_type]=${mediaType}`;
   }
   let result = await fetch(url, { headers: API_HEADERS });
   result = await result.json();
-  // return result.data.map(getUserById)[ 0 ];
   return result.data[ 0 ];
 }
 
@@ -25,8 +26,9 @@ export async function getEntryByHash(hash, mediaType = null) {
  * @param {Number} mediaId The entry's media ID
  * @returns {Promise} A promise of a JSON representation of the fetched entry
  */
-export async function getEntryByMediaId(mediaId, mediaType = null) {
-  let url = `${ENV.apiUrl}${ENTRY_ENDPOINT}?filter[media_id]=${mediaId}&include=media,user`;
+export async function getEntryByMediaId(mediaId, mediaType = null, ...include) {
+  include = include.length > 0 ? include : DEFAULT_INCLUDE;
+  let url = `${ENV.apiUrl}${ENTRY_ENDPOINT}?filter[media_id]=${mediaId}&include=${include.join(',')}`;
   if (mediaType !== null) {
     url = `${url}&filter[media_type]=${mediaType}`;
   }

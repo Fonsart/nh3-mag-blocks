@@ -1,6 +1,3 @@
-import { DashIcon } from './dash-icon';
-import { Spinner } from './spinner';
-
 /**
  * Component that displays an alert paragraph.
  * @param {Object} props Component properties
