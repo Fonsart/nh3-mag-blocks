@@ -1,6 +1,6 @@
 {
   "name": "nh3-mag-blocks",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "Add a new set of NH3 related Gutenberg blocks",
   "main": "nh3-mag-blocks.php",
   "scripts": {
