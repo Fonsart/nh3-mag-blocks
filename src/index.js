@@ -7,7 +7,7 @@ import blockArchiveAudio from './blocks/audio-document';
 import blockArchiveVideo from './blocks/video-document';
 import blockOnTopicSection from './blocks/on-topic-section';
 import blockOnTopicNh3 from './blocks/on-topic-nh3';
-import blockOnTopicRts from './blocks/on-topic-rts';
+import blockOnTopicSsr from './blocks/on-topic-ssr';
 
 const NAMESPACE = 'nh3';
 
@@ -17,7 +17,7 @@ const NAMESPACE = 'nh3';
   { name: 'video-document', definition: blockArchiveVideo },
   { name: 'on-topic-section', definition: blockOnTopicSection },
   { name: 'on-topic-nh3-links', definition: blockOnTopicNh3 },
-  { name: 'on-topic-rts-links', definition: blockOnTopicRts },
+  { name: 'on-topic-ssr-links', definition: blockOnTopicSsr },
 ].forEach(block => {
   registerBlockType(`${NAMESPACE}/${block.name}`, block.definition);
 });

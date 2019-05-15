@@ -3,7 +3,7 @@
  * This file is where you should put the code that bootstraps your plugin
  */
 
- define( 'NH3_MAG_ARCHIVE_URL', 'https://dev2.notrehistoire.ch');
+define( 'NH3_MAG_ARCHIVE_URL', 'https://dev2.notrehistoire.ch');
 
 /**
  * Register the new archive image block for the Gutenberg editor.
@@ -68,7 +68,7 @@ function nh3_mag_register_blocks() {
   ) );
 
   // Block registration : On Topic RTS/SRF/RSI/RTR Links
-  register_block_type( 'nh3/on-topic-rts-links', array(
+  register_block_type( 'nh3/on-topic-ssr-links', array(
     'editor_script' => 'nh3-mag-blocks',
     'editor_style' => 'nh3-mag-blocks-style-editor',
     'render_callback' => load_block_template('on-topic-rts')

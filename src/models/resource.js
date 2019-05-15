@@ -13,9 +13,10 @@ export class Resource {
    * @param {string} user.name The user's complete name
    * @param {string} user.username The user's username (will only be used if no user.name exists)
    * @param {string} type The resource's type
+   * @param {Object} props All other properties (like one specific to a type of resource)
    * @returns {Resrouce}
    */
-  constructor(title, cover, { avatar_url, name, username }, type) {
+  constructor(title, cover, { avatar_url, name, username }, type, props) {
     this.type = type;
     this.title = title || __('Untitled');
     this.cover = cover || "https://via.placeholder.com/360";
@@ -23,6 +24,7 @@ export class Resource {
       avatar: avatar_url || "https://via.placeholder.com/36",
       name: name || username
     };
+    this.props = props;
   }
 
 }

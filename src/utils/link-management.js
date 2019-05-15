@@ -99,11 +99,13 @@ function filterResourceData(resourceData) {
     // Return the resource if it's an error
   } else if (resourceData.error) {
     return resourceData;
+  } else if (resourceData.type === 'story') {
+    return new Resource(resourceData.title, resourceData.cover_url, resourceData.user, __('Story'));
     // If no media_type, let's assume it's a gallery
   } else if (!resourceData.media_type) {
-    return new Resource(resourceData.title, resourceData.cover ? resourceData.cover.url : null, resourceData.user, __('Gallery'));
+    return new Resource(resourceData.title, resourceData.cover ? resourceData.cover.url : null, resourceData.user, __('Gallery'), { nbDoc: resourceData.entries_count });
   } else if (resourceData.media_type === 'video') {
-    return new Resource(resourceData.title, resourceData.cover_url, resourceData.user, __('Video'));
+    return new Resource(resourceData.title, resourceData.cover_url || resourceData.media.thumbnail_url, resourceData.user, __('Video'));
   } else if (resourceData.media_type === 'audio') {
     return new Resource(resourceData.title, resourceData.cover_url, resourceData.user, __('Audio'));
   } else if (resourceData.media_type === 'photo') {

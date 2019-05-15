@@ -13,7 +13,9 @@ export function LinkCard({ content, url }) {
     case 'video':
       icon = <DashIcon name="format-video" />; break;
     case 'gallery':
-      icon = <DashIcon name="format-gallery" />; break;
+      icon = <span>{content.props.nbDoc} <DashIcon name="format-gallery" /></span>; break;
+    case 'story':
+      icon = <DashIcon name="format-quote" />; break;
     default:
       icon = <DashIcon name="format-aside" />;
   }
