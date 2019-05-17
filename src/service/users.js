@@ -11,6 +11,8 @@ export async function getUserById(userId) {
 }
 
 export async function withUser(apiResponse) {
-  apiResponse.user = await getUserById(apiResponse.user_id);
+  if (apiResponse) {
+    apiResponse.user = await getUserById(apiResponse.user_id);
+  }
   return apiResponse;
 }
