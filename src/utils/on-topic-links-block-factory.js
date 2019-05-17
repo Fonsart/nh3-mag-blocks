@@ -1,9 +1,9 @@
 import { TextareaControl } from '@wordpress/components';
 
 import { LinkContent } from '../components/link-content';
-import { uniqLink } from '../utils/misc';
+import { uniqLink } from './misc';
 import { AreaLabel } from '../components/area-label';
-import { getLinkContentPromise } from '../utils/link-management';
+import { getLinkContentPromise } from './link-management';
 
 /**
  * Generates the definition object for On Topic Links Blocks.
