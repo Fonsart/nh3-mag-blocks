@@ -1,5 +1,6 @@
 import { __ } from '@wordpress/i18n';
 
+import { ENV } from '../env';
 import { print, fromUrl, escapeRegExp } from '../utils/misc';
 import { getEntryByHash } from '../service/entries';
 import { getGalleryBySlug } from '../service/galleries';
@@ -20,7 +21,7 @@ const dataCache = {};
  */
 export async function getLinkContentPromise(url) {
   // Return promise from cache if exists and not an error
-  if (dataCache[ url ] && !dataCache[ url ].result.error) {
+  if (dataCache[ url ]) {
     return dataCache[ url ];
   }
 
@@ -33,14 +34,17 @@ export async function getLinkContentPromise(url) {
     data.result = await getGalleryBySlug(fromUrl(url)).then(withUser)
   } else {
     data.result = {
-      error: __('Invalid URL')
+      error: __('is not a valid URL')
     };
   }
 
-  data.result = filterResourceData(data.result);
+  // Set the promise in the cache only if their is a result and it's not an error
+  if (data.result && !data.result.error) {
+    data.result = filterResourceData(data.result);
+    dataCache[ url ] = data;
+  }
 
-  // Set the promise in the cache
-  dataCache[ url ] = data;
+  console.log(dataCache);
   return data;
 }
 
@@ -94,12 +98,7 @@ export function isGalleryUrl(url) {
  */
 function filterResourceData(resourceData) {
   print(resourceData);
-  if (!resourceData) {
-    return null;
-    // Return the resource if it's an error
-  } else if (resourceData.error) {
-    return resourceData;
-  } else if (resourceData.type === 'story') {
+  if (resourceData.type === 'story') {
     return new Resource(resourceData.title, resourceData.cover_url, resourceData.user, __('Story'));
     // If no media_type, let's assume it's a gallery
   } else if (!resourceData.media_type) {
