@@ -35,6 +35,10 @@ function replacePostFeaturedImage() {
           label={__('Caption')}
           onChange={value => console.log(value)}
         />
+        <TextareaControl
+          label={__('Credit')}
+          onChange={value => console.log(value)}
+        />
       </div>
     )
   }
