@@ -48,7 +48,8 @@
     "authorUri": "https://heig-vd.ch/rad/instituts/mei/",
     "textDomain": "nh3-mag-blocks",
     "domainPath": "/languages",
-    "bootstrapFilePath": "bootstrap.php"
+    "bootstrapFilePath": "bootstrap.php",
+    "prefix": "NH3_BLOCKS"
   },
   "dependencies": {
     "@wordpress/blocks": "^6.2.4",
