@@ -1,6 +1,6 @@
 {
-  "name": "mei/nh3-mag-photo-document-block",
-  "description": "Add Gutenberg blocks for embedding NH3 documents in a post",
+  "name": "mei/nh3-mag-blocks",
+  "description": "Add a new set of NH3 related Gutenberg blocks",
   "keywords": ["mei", "embed", "archive", "image", "gutenberg", "block"],
   "license": "MIT",
   "type": "wordpress-plugin",
