@@ -15,7 +15,7 @@ define( 'NH3_BLOCKS_CLASS_PREFIX', 'NH3_Blocks' );
  */
 spl_autoload_register(
 	function( $class_name ) {
-    // Only process the class name if it starts with the expected prefix
+		// Only process the class name if it starts with the expected prefix
 		if ( boolval( preg_match( '/^' . NH3_BLOCKS_CLASS_PREFIX . '.*/', $class_name ) ) ) {
 			$class_name_parts = explode( '_', $class_name );
 			$classes_dir      = realpath( plugin_dir_path( __FILE__ ) ) . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR;

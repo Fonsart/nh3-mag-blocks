@@ -1,16 +1,18 @@
 <?php
+// phpcs:ignoreFile
+
 /**
  * Writes the passed $text to the console using an `echo` call.
  * @param $text mixed - Can be either a string or an array of string. If you pass an array of string, each item will be written on y new line.
  */
-function write($text = '') {
-  if (is_array($text)) {
-    foreach ($text as $line) {
-      write($line);
-    }
-  } else {
-    echo $text.PHP_EOL;
-  }
+function write( $text = '' ) {
+	if ( is_array( $text ) ) {
+		foreach ( $text as $line ) {
+			write( $line );
+		}
+	} else {
+		echo $text . PHP_EOL;
+	}
 }
 
 /**
@@ -20,12 +22,12 @@ function write($text = '') {
  * @param string $file The name (with or without extension) of the file to load from
  * @return array|null The config array or null if the file does not exists.
  */
-function loadConfigFrom($file) {
-  if (file_exists($file)) {
-    return json_decode(file_get_contents($file));
-  } else {
-    return null;
-  }
+function loadConfigFrom( $file ) {
+	if ( file_exists( $file ) ) {
+		return json_decode( file_get_contents( $file ) );
+	} else {
+		return null;
+	}
 }
 
 /**
@@ -38,10 +40,10 @@ function loadConfigFrom($file) {
  * @param Boolean $toupper Wether the name sould be in lower case (false) or upper case (true). Defaults to `false`.
  * @return String The normalized name
  */
-function normalizeName($name, $separator = '-', $toUpper = false) {
-  $name = $toUpper ? strtoupper($name) : strtolower($name);
-  $name = preg_replace('~ - ~', ' ', $name);
-  return preg_replace('~ ~', $separator, $name);
+function normalizeName( $name, $separator = '-', $toUpper = false ) {
+	$name = $toUpper ? strtoupper( $name ) : strtolower( $name );
+	$name = preg_replace( '~ - ~', ' ', $name );
+	return preg_replace( '~ ~', $separator, $name );
 }
 
 /**
@@ -50,10 +52,10 @@ function normalizeName($name, $separator = '-', $toUpper = false) {
  * @param string $file The file to retrieve the version number from
  * @return string|null The version number or null if the file did not exists.
  */
-function getVersionFrom($file) {
-  if (file_exists($file)) {
-    return 'v'. loadConfigFrom($file)->version;
-  } else {
-    return null;
-  }
+function getVersionFrom( $file ) {
+	if ( file_exists( $file ) ) {
+		return 'v' . loadConfigFrom( $file )->version;
+	} else {
+		return null;
+	}
 }
