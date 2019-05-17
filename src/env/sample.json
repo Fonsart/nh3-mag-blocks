@@ -1,4 +1,14 @@
 {
-  "apiUrl": "https://your-api/url",
-  "apiToken": "YOUR_NH3_API_TOKEN"
+  "fr": {
+    "siteUrl": "https://url-for-french-platform",
+    "apiToken": "French-Platform-Api-Access-Token"
+  },
+  "it": {
+    "siteUrl": "https://url-for-italian-platform",
+    "apiToken": "Italian-Platform-Api-Access-Token"
+  },
+  "rm": {
+    "siteUrl": "https://url-for-rumansch-platform",
+    "apiToken": "Rumansch-Platform-Api-Access-Token"
+  }
 }
