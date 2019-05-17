@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<ruleset name="Supplang WordPress Plugin" namespace="WordPress\Plugin\Supplang">
+<ruleset name="NH3 Mag Blocks WordPress Plugin" namespace="WordPress\Plugin\NH3MagBlocks">
   <!--
     Provide installation path to the WordPress Coding Standards.
   -->
@@ -35,7 +35,7 @@
   -->
   <rule ref="WordPress.WP.I18n">
     <properties>
-      <property name="text_domain" type="array" value="supplang" />
+      <property name="text_domain" type="array" value="nh3-mag-blocks" />
     </properties>
   </rule>
 
@@ -46,7 +46,7 @@
   -->
   <rule ref="WordPress.NamingConventions.PrefixAllGlobals">
     <properties>
-      <property name="prefixes" type="array" value="supplang" />
+      <property name="prefixes" type="array" value="nh3_blocks" />
     </properties>
   </rule>
 
