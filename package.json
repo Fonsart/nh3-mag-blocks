@@ -34,6 +34,13 @@
   },
   "homepage": "https://github.com/MediaComem/nh3-mag-blocks#readme",
   "devDependencies": {
+    "@wordpress/blocks": "^6.2.5",
+    "@wordpress/components": "^7.3.2",
+    "@wordpress/compose": "^3.2.0",
+    "@wordpress/data": "^4.4.0",
+    "@wordpress/editor": "^9.2.5",
+    "@wordpress/element": "^2.3.0",
+    "@wordpress/i18n": "^3.3.0",
     "@wordpress/scripts": "3.1.0",
     "browser-sync": "^2.26.3",
     "concurrently": "^4.1.0",
@@ -44,6 +51,8 @@
     "gulp-sass": "^4.0.2",
     "gulp-vinyl-zip": "^2.1.2",
     "gulp-zip": "^4.2.0",
+    "lodash.capitalize": "^4.2.1",
+    "lodash.uniqwith": "^4.5.0",
     "node-sass": "^4.12.0"
   },
   "wp": {
@@ -54,19 +63,5 @@
     "bootstrapFilePath": "bootstrap.php",
     "prefix": "NH3_BLOCKS"
   },
-  "dependencies": {
-    "@wordpress/blocks": "^6.2.4",
-    "@wordpress/components": "^7.3.1",
-    "@wordpress/compose": "^3.2.0",
-    "@wordpress/data": "^4.4.0",
-    "@wordpress/editor": "^9.2.4",
-    "@wordpress/element": "^2.3.0",
-    "@wordpress/i18n": "^3.3.0",
-    "lodash.capitalize": "^4.2.1",
-    "lodash.debounce": "^4.0.8",
-    "lodash.isempty": "^4.4.0",
-    "lodash.merge": "^4.6.1",
-    "lodash.uniq": "^4.5.0",
-    "lodash.uniqwith": "^4.5.0"
-  }
+  "dependencies": {}
 }

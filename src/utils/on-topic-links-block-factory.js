@@ -31,7 +31,7 @@ export function makeOnTopicBlockDefinition({ title, sectionTitle }) {
       // Initialize the data to an empty array to avoid a JSON parser error when no data
       const getData = () => attributes.data ? JSON.parse(attributes.data) : [];
 
-      let linksData = getData();
+      const linksData = getData();
 
       if (!attributes.init) {
         // When init, rebuild the textarea content from the component's data

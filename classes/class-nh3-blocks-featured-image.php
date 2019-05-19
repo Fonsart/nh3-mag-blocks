@@ -11,9 +11,13 @@ class NH3_Blocks_Featured_Image {
 
   public function display_custom_featured_image(string $html, int $post_id) {
     $att = json_decode(get_post_meta( $post_id, self::CUSTOM_META_NAME, true ), true);
-    ob_start();
-    include plugin_dir_path( NH3_BLOCKS_MAIN_FILE ) . "templates/display-image.php";
-    return ob_get_clean();
+    if ( isset( $att['fileUrl'] ) ) {
+      ob_start();
+      include plugin_dir_path( NH3_BLOCKS_MAIN_FILE ) . "templates/display-image.php";
+      return ob_get_clean();
+    } else {
+      return $html;
+    }
   }
 
   public function register_custom_meta() {
