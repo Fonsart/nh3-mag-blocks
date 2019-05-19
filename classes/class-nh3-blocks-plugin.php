@@ -29,8 +29,16 @@ class NH3_Blocks_Plugin {
 	 */
 	public function __construct() {
 		add_filter( 'block_categories', array( $this, 'register_block_category' ), 10, 1 );
-		add_action( 'init', array( $this, 'register_blocks' ) );
-	}
+    add_action( 'init', array( $this, 'init' ) );
+  }
+
+  /**
+   * Actions done in the `init` WordPress hook.
+   */
+  public function init() {
+    $this->register_blocks();
+    new NH3_Blocks_Featured_Image();
+  }
 
 	/**
 	 * Register a new "NH3 Blocks" block category on the $categories array.
@@ -65,7 +73,9 @@ class NH3_Blocks_Plugin {
 				'wp-i18n',
 				'wp-blocks',
 				'wp-element',
-				'wp-editor',
+        'wp-editor',
+        'wp-data',
+        'wp-compose'
 			),
 			filemtime( plugin_dir_path( NH3_BLOCKS_MAIN_FILE ) . 'build/index.js' )
 		);
