@@ -1,15 +1,16 @@
 $white: #fff;
 $black: #000;
 $error-color: #d94f4f;
+$border-input: .5px solid rgba(64, 64, 64, .2);
 
 @mixin block-with-url-input {
-  .nh3-mag-blocks-url-input>div {
+  .nh3-mag-blocks-document-selector-url-input>div {
     opacity: .5;
   }
 
   &.is-selected,
   &.is-typing {
-    .nh3-mag-blocks-url-input>div {
+    .nh3-mag-blocks-document-selector-url-input>div {
       opacity: 1;
     }
   }

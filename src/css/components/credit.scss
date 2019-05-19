@@ -1,7 +1,9 @@
-.nh3-mag-blocks-credit {
-  font-size: .7em;
-  font-style: italic;
-  margin: 0;
-  text-align: right;
-  width: 100%;
+input {
+  &.nh3-mag-blocks-credit {
+    border: $border-input;
+    font-size: .9em;
+    font-style: italic;
+    margin: 0;
+    width: 100%;
+  }
 }

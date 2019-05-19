@@ -1,6 +1,6 @@
-input {
+textarea {
   &.nh3-mag-blocks-caption {
-    border: 0;
+    border: $border-input;
     text-align: center;
     width: 100%;
   }

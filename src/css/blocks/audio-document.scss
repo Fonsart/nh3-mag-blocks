@@ -2,7 +2,5 @@
   audio {
     width: 100%;
   }
-
   @include block-with-url-input;
-  @import '../components/edit-audio';
 }
