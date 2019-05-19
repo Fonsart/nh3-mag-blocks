@@ -3,9 +3,8 @@
  * @see https://tobiasahlin.com/spinkit/
  */
 export function Spinner({ classes = null }) {
-  const className = `nh3-mag-archive-loading ${classes}`;
   return (
-    <p class={className}>
+    <p class={`nh3-mag-archive-loading ${classes}`}>
       <div class="sk-cube-grid">
         <div class="sk-cube sk-cube1"></div>
         <div class="sk-cube sk-cube2"></div>

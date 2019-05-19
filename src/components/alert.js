@@ -1,17 +1,27 @@
+import { Component } from "@wordpress/element";
+
 /**
  * Component that displays an alert paragraph.
- * @param {Object} props Component properties
- * @param {String} type The type of alert to show. Should be either 'error' or 'loading'.
- * @param {String} [content=null] The content to display in the alert. Defaults to no content.
  */
-export function Alert({ content, type = 'error', ...otherProps }) {
-  let className = `components-notice is-${type}`;
+export class Alert extends Component {
 
-  return (
-    <div class={className} {...otherProps}>
-      <div class="components-notice__content">
-        {content}
+  /**
+   * If no "type" attribute is defined for the component, it will defaults to an "error" alert.
+   * @param {Object} props Component properties
+   */
+  constructor(props) {
+    super(props);
+    this.class = `components-notice is-${this.props.type || 'error'}`;
+  }
+
+  render() {
+    return (
+      <div class={this.class}>
+        <div class="components-notice__content">
+          {this.props.content}
+        </div>
       </div>
-    </div>
-  )
+    )
+  }
+
 }

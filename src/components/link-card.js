@@ -1,40 +1,48 @@
+import { Component } from '@wordpress/element';
+import { AUDIO_TYPE, GALLERY_TYPE, PHOTO_TYPE, STORY_TYPE, VIDEO_TYPE } from '../models/resources';
 import { DashIcon } from './dash-icon';
 
-export function LinkCard({ content, url }) {
-  let icon;
-  const classes = `nh3-mag-blocks-link-card ${content.type.toLowerCase()}`;
+export class LinkCard extends Component {
 
-  // Select the icon based on the type of Link
-  switch (content.type.toLowerCase()) {
-    case 'photo':
-      icon = <DashIcon name="format-image" />; break;
-    case 'audio':
-      icon = <DashIcon name="format-audio" />; break;
-    case 'video':
-      icon = <DashIcon name="format-video" />; break;
-    case 'gallery':
-      icon = <span>{content.props.nbDoc} <DashIcon name="format-gallery" /></span>; break;
-    case 'story':
-      icon = <DashIcon name="format-quote" />; break;
-    default:
-      icon = <DashIcon name="format-aside" />;
+  constructor(props) {
+    super(props);
+    this.class = `nh3-mag-blocks-link-card ${this.props.content.type}`;
+
+    // Define the correct icon
+    switch (this.props.content.type) {
+      case PHOTO_TYPE:
+        this.icon = <DashIcon name="format-image" />; break;
+      case AUDIO_TYPE:
+        this.icon = <DashIcon name="format-audio" />; break;
+      case VIDEO_TYPE:
+        this.icon = <DashIcon name="format-video" />; break;
+      case GALLERY_TYPE:
+        this.icon = <span>{this.props.content.nbDoc} <DashIcon name="format-gallery" /></span>; break;
+      case STORY_TYPE:
+        this.icon = <DashIcon name="format-quote" />; break;
+      default:
+        this.icon = <DashIcon name="format-aside" />;
+    }
   }
 
-  return (
-    <div class={classes}>
-      <a href={url} target="_blank">
-        <figure>
-          <img src={content.cover} />
-        </figure>
-        <div class="infos">
-          <h3 class="title">{content.title}</h3>
-          <div class="user">
-            <img src={content.user.avatar} />
-            <span>{content.user.name}</span>
+  render() {
+    return (
+      <div class={this.class}>
+        <a href={this.props.url} target="_blank">
+          <figure>
+            <img src={this.props.content.cover} />
+          </figure>
+          <div class="infos">
+            <h3 class="title">{this.props.content.title}</h3>
+            <div class="user">
+              <img src={this.props.content.user.avatar} />
+              <span>{this.props.content.user.name}</span>
+            </div>
+            <span class="type">{this.icon}</span>
           </div>
-          <span class="type">{icon}</span>
-        </div>
-      </a>
-    </div>
-  );
+        </a>
+      </div>
+    );
+  }
+
 }
