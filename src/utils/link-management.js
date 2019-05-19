@@ -2,14 +2,10 @@ import { __ } from '@wordpress/i18n';
 
 import { ENV } from '../env';
 import { print, fromUrl, escapeRegExp } from '../utils/misc';
-import { getEntryByHash } from '../service/entries';
-import { getGalleryBySlug } from '../service/galleries';
-import { Resource } from '../models/resource';
-import { withUser } from '../service/users';
-
-export const BASE_SITE_URL = 'https://dev2.notrehistoire.ch';
-export const MEDIA_BASE_URL = `${BASE_SITE_URL}/entries`;
-export const GALLERY_BASE_URL = `${BASE_SITE_URL}/galleries`;
+import { fetchEntryByHash, ENTRY_PATH } from '../service/entries';
+import { fetchGalleryBySlug, GALLERY_PATH } from '../service/galleries';
+import { fetchUserById } from '../service/users';
+import * as Links from '../models/resources';
 
 const dataCache = {};
 
@@ -26,66 +22,73 @@ export async function getLinkContentPromise(url) {
   }
 
   const data = { url };
-  const urlType = parseUrl(url);
-  // Get the promise based on the url
-  if (urlType.isMedia) {
-    data.result = await getEntryByHash(fromUrl(url), null, 'media', 'meta').then(withUser)
-  } else if (urlType.isGallery) {
-    data.result = await getGalleryBySlug(fromUrl(url)).then(withUser)
+  const urlProps = parseUrl(url);
+
+  if (urlProps.type === Links.MEDIA_TYPE) {
+    data.resource = await fetchEntryByHash(fromUrl(url), urlProps.platform, null, 'media', 'meta');
+  } else if (urlProps.type === Links.GALLERY_TYPE) {
+    data.resource = await fetchGalleryBySlug(fromUrl(url), urlProps.platform);
   } else {
-    data.result = {
+    data.resource = {
       error: __('is not a valid URL')
     };
   }
 
-  // Set the promise in the cache only if their is a result and it's not an error
-  if (data.result && !data.result.error) {
-    data.result = filterResourceData(data.result);
+  // If there is a resource that contains a user id, fetch this user
+  if (data.resource && data.resource.user_id) {
+    data.resource.user = await fetchUserById(data.resource.user_id, urlProps.platform);
+  }
+
+  // Set the promise in the cache only if there is a resource and it's not an error
+  if (data.resource && !data.resource.error) {
+    data.resource = filterResourceData(data.resource);
+    data.resource.platform = urlProps.platform;
     dataCache[ url ] = data;
   }
 
-  console.log(dataCache);
   return data;
 }
 
 /**
- * Analyzes the given URL against each expected URL.
- * Returns an object where each property is a boolean indicating if the URL is of the specified type:
+ * Parse the given URL in order to guess the type of resource and the platform it targets.
+ * Returns an object with two properties, `type` and `platform` that contains those information.
  *
- * Example:
- * ```js
- * const URL = "https://dev2.notrehistoire.ch/entries/Testing"
- * const urlType = parseUrl(URL);
- * console.log(urlType.isMedia); // false
- * console.log(urlType.isGalleryUrl); // true
+ * Example of returned object:
+ * ```json
+ * {
+ *  "type": "media",
+ *  "platform": "fr"
+ * }
  * ```
+ * Returns and empty object if the given URL does not match any known resource URL or platform URL.
  *
  * @param {string} url The URL to test
- * @returns {Object} A type object
+ * @returns {Object|null} A result object or `null` if the URL could not be parsed.
  */
 export function parseUrl(url) {
-  return {
-    isMedia: isMediaUrl(url),
-    isGallery: isGalleryUrl(url)
+  const result = {};
+
+  // Guess platform
+  for (const key in ENV.config) {
+    // Skip platform testing if one already found
+    if (!result.platform && ENV.config.hasOwnProperty(key)) {
+      const pattern = new RegExp(`^${escapeRegExp(ENV.config[ key ].siteUrl)}`);
+      if (pattern.test(url)) {
+        result.platform = key;
+      }
+    }
   }
-}
 
-/**
- * Test that the given URL matches the expected format of a NH3 media URL.
- * @param {string} url The URL to test
- * @return {Boolean}
- */
-export function isMediaUrl(url) {
-  return testPattern('media', url);
-}
+  // Only Guess type if platform has been found
+  if (result.platform) {
+    if (new RegExp(`${ENTRY_PATH}\/[a-zA-Z0-9]+$`).test(url)) {
+      result.type = Links.MEDIA_TYPE;
+    } else if (new RegExp(`${GALLERY_PATH}\/[a-z0-9]+(?:-[a-z0-9]+)*$`).test(url)) {
+      result.type = Links.GALLERY_TYPE;
+    }
+  }
 
-/**
- * Test that the given URL matches the expected format of a NH3 gallery URL.
- * @param {string} url The URL to test
- * @return {Boolean}
- */
-export function isGalleryUrl(url) {
-  return testPattern('gallery', url);
+  return result;
 }
 
 /**
@@ -98,35 +101,16 @@ export function isGalleryUrl(url) {
  */
 function filterResourceData(resourceData) {
   print(resourceData);
-  if (resourceData.type === 'story') {
-    return new Resource(resourceData.title, resourceData.cover_url, resourceData.user, __('Story'));
+  if (resourceData.type === Links.STORY_TYPE) {
+    return new Links.ResourceStory(resourceData);
     // If no media_type, let's assume it's a gallery
   } else if (!resourceData.media_type) {
-    return new Resource(resourceData.title, resourceData.cover ? resourceData.cover.url : null, resourceData.user, __('Gallery'), { nbDoc: resourceData.entries_count });
-  } else if (resourceData.media_type === 'video') {
-    return new Resource(resourceData.title, resourceData.cover_url || resourceData.media.thumbnail_url, resourceData.user, __('Video'));
-  } else if (resourceData.media_type === 'audio') {
-    return new Resource(resourceData.title, resourceData.cover_url, resourceData.user, __('Audio'));
-  } else if (resourceData.media_type === 'photo') {
-    return new Resource(resourceData.title, resourceData.media.thumbnail_url, resourceData.user, __('Photo'));
-  }
-}
-
-/**
- * Test an url against a pattern.
- * Add a new property to the internal `patterns` object if needed.
- * @param {string} name Name of the pattern to use
- * @param {string} url Url to test
- * @returns {Boolean}
- */
-function testPattern(name, url) {
-  const patterns = {
-    media: `^${escapeRegExp(MEDIA_BASE_URL)}\/[a-zA-Z0-9]+$`,
-    gallery: `^${escapeRegExp(GALLERY_BASE_URL)}\/[a-z0-9]+(?:-[a-z0-9]+)*$`
-  };
-
-  if (patterns[ name ]) {
-    const pattern = new RegExp(patterns[ name ]);
-    return pattern.test(url);
+    return new Links.ResourceGallery(resourceData);
+  } else if (resourceData.media_type === Links.VIDEO_TYPE) {
+    return new Links.ResourceVideo(resourceData);
+  } else if (resourceData.media_type === Links.AUDIO_TYPE) {
+    return new Links.ResourceAudio(resourceData);
+  } else if (resourceData.media_type === Links.PHOTO_TYPE) {
+    return new Links.ResourcePhoto(resourceData);
   }
 }

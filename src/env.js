@@ -1,3 +1,4 @@
-const envConfig = require(`./env/${process.env.NODE_ENV}.json`);
-envConfig.name = process.env.NODE_ENV;
-export const ENV = envConfig;
+export const ENV = {
+  config: require(`./env/${process.env.NODE_ENV}.json`),
+  name: process.env.NODE_ENV
+};

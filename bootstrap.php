@@ -10,6 +10,13 @@ define( 'NH3_BLOCKS_ARCHIVE_URL', 'https://dev2.notrehistoire.ch' );
 // Plugin class prefixes
 define( 'NH3_BLOCKS_CLASS_PREFIX', 'NH3_Blocks' );
 
+// Site URLS
+define( 'NH3_BLOCKS_SITE_URLS', array(
+  'fr' => 'https://dev2.notrehistoire.ch',
+  'it' => 'https://dev.lanostrastoria.ch',
+  'rm' => 'https://dev.nossaistorgia.ch'
+) );
+
 /**
  * --- REGISTER AUTOLOADER ---
  */

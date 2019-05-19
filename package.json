@@ -9,7 +9,10 @@
     "dist": "npm run build && npm run zip",
     "zip": "gulp zip",
     "build": "gulp clean:build && gulp css:build && wp-scripts build",
-    "proxy": "cors-http-proxy -t https://dev2.notrehistoire.ch/api/v1 -p 666",
+    "proxy": "concurrently \"npm run proxy:fr\" \"npm run proxy:it\" \"npm run proxy:rm\"",
+    "proxy:fr": "cors-http-proxy -t https://dev2.notrehistoire.ch -p 666",
+    "proxy:it": "cors-http-proxy -t https://dev.lanostrastoria.ch -p 667",
+    "proxy:rm": "cors-http-proxy -t https://dev.nossaistorgia.ch -p 668",
     "version:major": "composer release major && npm run dist",
     "version:minor": "composer release minor && npm run dist",
     "version:patch": "composer release patch && npm run dist"

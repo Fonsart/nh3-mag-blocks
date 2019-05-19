@@ -21,10 +21,6 @@ export default {
     multiple: false
   },
   edit({ className }) {
-    function OnTopicAppender() {
-      return <button type="button">Render Appender</button>
-    }
-
     return (
       <div className={className}>
         <h2>{__("On the same topic")}</h2>
