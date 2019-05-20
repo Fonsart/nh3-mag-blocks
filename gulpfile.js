@@ -19,6 +19,7 @@ function makeZip() {
     .src([
       '*.php',
       'build/**/*',
+      'classes/**/*',
       'languages/**/{*.po~,*.pot~}',
       'templates/**/*'
     ], { base: '.' })
