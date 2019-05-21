@@ -3,22 +3,17 @@ import { TextareaControl } from '@wordpress/components';
 import { Component } from '@wordpress/element';
 
 export class Caption extends Component {
-  constructor(props) {
-    super(props);
-    this.placeholder = __("Write a caption for this document");
-    this.class = "nh3-mag-blocks-caption"
-    this.rows = 2;
-  }
 
   render() {
     return (
       <TextareaControl
-        class={this.class}
+        class="nh3-mag-blocks-caption"
         onChange={this.props.onChange}
-        placeholder={this.placeholder}
+        placeholder={__("Write a caption for this document")}
         value={this.props.value}
-        rows={this.rows}
+        rows="3"
       />
     )
   }
+
 }
