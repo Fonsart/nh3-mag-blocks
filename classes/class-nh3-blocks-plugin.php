@@ -36,8 +36,16 @@ class NH3_Blocks_Plugin {
    * Actions done in the `init` WordPress hook.
    */
   public function init() {
+    $this->load_text_domain();
     $this->register_blocks();
     new NH3_Blocks_Featured_Image();
+  }
+
+  /**
+   * Loads the text domain for the translations
+   */
+  public function load_text_domain() {
+    load_plugin_textdomain( 'nh3-mag-blocks', null, '/nh3-mag-blocks/languages' );
   }
 
 	/**
