@@ -31,8 +31,7 @@ const NAMESPACE = 'nh3';
 const FeaturedImage = compose(
   withSelect((select, props) => {
     const meta = select('core/editor').getEditedPostAttribute('meta')[ props.metaFieldName ];
-    const data = meta ? JSON.parse(select('core/editor').getEditedPostAttribute('meta')[ props.metaFieldName ]) : {};
-    console.log('FeaturedImage.withSelect', data, props);
+    const data = meta ? JSON.parse(meta) : {};
     return {
       hash: data.hash,
       platform: data.platform,
