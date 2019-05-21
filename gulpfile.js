@@ -14,7 +14,7 @@ const zipPath = [
   '*.php',
   'build/**/*',
   'classes/**/*',
-  'languages/**/{*.po~,*.pot~}',
+  'languages/nh3-mag-blocks.pot',
   'templates/**/*'
 ];
 const potFiles = [
