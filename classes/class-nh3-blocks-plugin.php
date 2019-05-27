@@ -30,6 +30,7 @@ class NH3_Blocks_Plugin {
 	public function __construct() {
 		add_filter( 'block_categories', array( $this, 'register_block_category' ), 10, 1 );
     add_action( 'init', array( $this, 'init' ) );
+    add_filter( 'allowed_block_types', array( $this, 'whitelist_blocks') );
   }
 
   /**
@@ -122,5 +123,26 @@ class NH3_Blocks_Plugin {
 			include plugin_dir_path( NH3_BLOCKS_MAIN_FILE ) . "templates/$name.php";
 			return ob_get_clean();
 		};
-	}
+  }
+
+  /**
+   * Limit the blocks available in the editor.
+   */
+  public function whitelist_blocks( $allowed_blocks ) {
+    return array(
+      // Core blocks
+      'core/paragraph',
+      'core/heading',
+      'core/list',
+      'core/quote',
+      // All the NH3 Blocks from the this plugin
+      'nh3/photo-document',
+      'nh3/video-document',
+      'nh3/audio-document',
+      'nh3/on-topic-section',
+      'nh3/on-topic-nh3-links',
+      'nh3/on-topic-ssr-links',
+    );
+  }
+
 }
