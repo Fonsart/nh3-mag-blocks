@@ -14,10 +14,46 @@ require_once 'utils.php';
 
 class Releases {
 
-	const COMMANDS       = array( 'delete', 'make', 'zip' );
-	const VERSION_SYNTAX = '/v(\d\.){2}\d/';
+  const VERSION_SYNTAX = '/v(\d\.){2}\d/';
+  const MAKE_COMMAND = 'make';
 	const WHITELIST      = array( 'major', 'minor', 'patch' );
 	const JSON_INDENT    = '  ';
+
+	/**
+	 * Main entry point.
+	 * Will execute an action based on the given parameters.
+	 * @param Event $event A Composer Event object
+	 */
+	public static function route( Event $event ) {
+		$args = $event->getArguments();
+		// Incorrect number of arguments
+		if ( sizeof( $args ) === 0 || sizeof( $args ) > 2 ) {
+			write( 'ERROR --- You provided ' . sizeof( $args ) . ' argument' . ( sizeof( $args ) === 0 ? '' : 's' ) . '.' );
+			self::writeHelp();
+			exit();
+		}
+    $action = $args[0];
+    // Make action
+		if ( $action === self::MAKE_COMMAND ) {
+			$type = isset( $args[1] ) ? $args[1] : null;
+			if ( null !== $type && in_array( $type, self::WHITELIST ) ) {
+				self::make( $type );
+			} else {
+				write(
+					array(
+						'Bad type argument',
+						self::writeHelp(),
+					)
+				);
+			}
+			// Shortcut make action
+		} elseif ( in_array( $action, self::WHITELIST ) ) {
+			self::make( $action );
+			// Unknown action - prints the help
+		} else {
+			write( self::writeHelp() );
+		}
+	}
 
 	/**
 	 * Creates a new release using the semver syntax.
@@ -42,9 +78,10 @@ class Releases {
 					'INFO ---- Last version found was ' . $versions['last'],
 					"INFO ---- Release type \"$type\" bumped the version to " . $versions['current'],
 				)
-			);
+      );
+      // Update the plugin.json if it exists
 			if ( file_exists( 'plugin.json' ) ) {
-				  self::updateJsonVersion( $versions['current'] );
+        self::updateJsonVersion( $versions['current'] );
 			}
 			// Update the package.json if it exists
 			if ( file_exists( 'package.json' ) ) {
@@ -65,83 +102,11 @@ class Releases {
 		}
 	}
 
-	/**
-	 * Main entry point.
-	 * Will execute an action based on the given parameters.
-	 * @param Event $event A Composer Event object
-	 */
-	public static function route( Event $event ) {
-		$args = $event->getArguments();
-		// Incorrect number of arguments
-		if ( sizeof( $args ) === 0 || sizeof( $args ) > 2 ) {
-			write( 'ERROR --- You provided ' . sizeof( $args ) . ' argument' . ( sizeof( $args ) === 0 ? '' : 's' ) . '.' );
-			self::writeHelp();
-			exit();
-		}
-		$action = $args[0];
-		// Delete action
-		if ( $action === self::COMMANDS[0] ) {
-			write( 'You wish to delete a release' );
-			$version = isset( $args[1] ) ? $args[1] : null;
-			if ( preg_match( self::VERSION_SYNTAX, $version ) ) {
-				write( "You wish to delete the $version release" );
-				self::delete( $version );
-			} else {
-				write(
-					array(
-						'Bad version argument',
-						self::writeHelp(),
-					)
-				);
-			}
-			// Zip action
-		} elseif ( $action === self::COMMANDS[2] ) {
-			write( 'You wish to make a zip' );
-			$version = isset( $args[1] ) ? $args[1] : null;
-			if ( preg_match( self::VERSION_SYNTAX, $version ) ) {
-				self::makeZipFolder( $version );
-			} else {
-				write(
-					array(
-						'Bad version argument',
-						self::writeHelp(),
-					)
-				);
-			}
-			// Make action
-		} elseif ( $action === self::COMMANDS[1] ) {
-			write( 'You wish to make a release' );
-			$type = isset( $args[1] ) ? $args[1] : null;
-			if ( null !== $type && in_array( $type, self::WHITELIST ) ) {
-				self::make( $type );
-			} else {
-				write(
-					array(
-						'Bad type argument',
-						self::writeHelp(),
-					)
-				);
-			}
-			// Shortcut make action
-		} elseif ( in_array( $action, self::WHITELIST ) ) {
-			self::make( $action );
-			// Unknown action - prints the help
-		} else {
-			write( self::writeHelp() );
-		}
-	}
-
 	public static function writeHelp() {
-		self::writeMakeHelp();
-		write();
-		self::writeDeleteHelp();
-	}
-
-	private static function writeMakeHelp() {
 		write(
 			array(
 				'---------------------------------------',
-				'Make and deploy a new release to GitLab',
+				'Update the version number',
 				'',
 				'Usage:',
 				' composer release [make] <major|minor|patch>',
@@ -152,40 +117,16 @@ class Releases {
 				'  minor ---- will increment the second number of the release version.',
 				'             example: getting from a v.1.2.3 to a v.1.3.0',
 				'  patch ---- will increment the last number of the release version.',
-				'             example: getting from a v.1.2.3 to a v.1.2.4',
+        '             example: getting from a v.1.2.3 to a v.1.2.4',
+        '',
 				'Help:',
-				'  Update the plugin.json file.',
-				'  Regenerate a new [plugin-name].php file.',
-				'  Create a zipfile containing the necessary plugin files.',
-				'  Upload the zipfile to GitLab, using the settings in the .release.conf file.',
-				'  Finally, create a new release on GitLab, attaching the uploaded zipfile.',
+				'  Update the plugin.json file and/or the package.json file with a new semver number.',
+        '  Regenerate a new [plugin-name].php file, using the new version number.',
+        '  Create a new Git commit with all the updated files.',
+        '  Add a new tag using the semver number as name.',
+        '  Push the commit and the tag to the remote branch tracked by the current local branch.'
 			)
 		);
-	}
-
-	private static function writeDeleteHelp() {
-		write(
-			array(
-				'-----------------------------',
-				'Delete a release from GitLab',
-				'',
-				'Usage:',
-				'  composer release delete <version>',
-				'',
-				'Arguments:',
-				'  <version> - the version number of the release to delete.',
-				'              Must respect the format "v(\d\.){2}\d\."',
-				'Examples:',
-				'  composer release delete v1.2.3',
-				'  composer release delete v0.0.1',
-				'',
-				'Help:',
-			)
-		);
-	}
-
-	private static function delete( $version ) {
-		write( "DELETED -- $version release" );
 	}
 
 	/**
@@ -242,6 +183,7 @@ class Releases {
 	 * Update the version number in the plugin.json file to the given $version number.
 	 * You can change the file in which the version is updated by passing an $options array with
 	 * a `file` item whose value contains the path to the file.
+   * **This file must be a JSON file with at least a `version` property.**
 	 * @param string $version The version number
 	 * @param array [$options] An options array
 	 * @param string [$options['file']] The path to the file to update. Defaults to `plugin.json`

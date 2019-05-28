@@ -19,10 +19,10 @@ function write( $text = '' ) {
  * Load the configuration from the given json $file name.
  * **Note that you need to pass the _complete_ file name, e.g. with its extension.**
  *
- * @param string $file The name (with or without extension) of the file to load from
+ * @param string $file The name (with or without extension) of the file to load from. Defaults to plugin.json
  * @return array|null The config array or null if the file does not exists.
  */
-function loadConfigFrom( $file ) {
+function loadConfigFrom( $file = 'plugin.json' ) {
 	if ( file_exists( $file ) ) {
 		return json_decode( file_get_contents( $file ) );
 	} else {
