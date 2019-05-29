@@ -1,9 +1,22 @@
+<?php
+/**
+ * Template used to display both Featured Images and Photo Documents
+ * The presence of a $size = 'full' indicates that the image is a featured image and all content should be displayed
+ * This value is also used to add or remove a surrounding div.wp-media-wrapper around the img tag
+ */
+?>
 <?php $nh3_blocks_with_caption = isset($att['caption']) && (!isset($size) || 'full' === $size); ?>
 <?php $nh3_blocks_with_credit = isset($att['credit']) && (!isset($size) || 'full' === $size); ?>
 <?php if (isset( $att['fileUrl'] ) ) : ?>
-  <div class="wp-media-wrapper">
+
+  <?php if (isset( $size ) && 'full' === $size ) : ?>
+    <div class="wp-media-wrapper">
+      <img src="<?php echo esc_attr( $att['fileUrl'] ); ?>"/>
+    </div>
+  <?php else: ?>
     <img src="<?php echo esc_attr( $att['fileUrl'] ); ?>"/>
-  </div>
+  <?php endif; ?>
+
   <?php if ( $nh3_blocks_with_caption || $nh3_blocks_with_credit ) : ?>
     <figcaption>
       <!-- Caption -->
