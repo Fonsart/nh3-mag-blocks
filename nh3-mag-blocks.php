@@ -2,7 +2,7 @@
 /**
  * Plugin Name: NH3 Mag - Blocks
  * Description: Add a new set of NH3 related Gutenberg blocks
- * Version:     2.3.5
+ * Version:     2.3.6
  * Author:      Media Engineering Institute (MEI)
  * Author URI:  https://heig-vd.ch/rad/instituts/mei/
  * Text Domain: nh3-mag-blocks
