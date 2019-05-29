@@ -5,16 +5,16 @@
  * This value is also used to add or remove a surrounding div.wp-media-wrapper around the img tag
  */
 ?>
-<?php $nh3_blocks_with_caption = isset($att['caption']) && (!isset($size) || 'full' === $size); ?>
-<?php $nh3_blocks_with_credit = isset($att['credit']) && (!isset($size) || 'full' === $size); ?>
+<?php $nh3_blocks_with_caption = isset($att['caption']) && (!isset($size) || 'mini' !== $size); ?>
+<?php $nh3_blocks_with_credit = isset($att['credit']) && (!isset($size) || 'mini' !== $size); ?>
 <?php if (isset( $att['fileUrl'] ) ) : ?>
 
-  <?php if (isset( $size ) && 'full' === $size ) : ?>
+  <?php if (isset( $size ) && 'mini' === $size ) : ?>
+    <img src="<?php echo esc_attr( $att['fileUrl'] ); ?>"/>
+  <?php else: ?>
     <div class="wp-media-wrapper">
       <img src="<?php echo esc_attr( $att['fileUrl'] ); ?>"/>
     </div>
-  <?php else: ?>
-    <img src="<?php echo esc_attr( $att['fileUrl'] ); ?>"/>
   <?php endif; ?>
 
   <?php if ( $nh3_blocks_with_caption || $nh3_blocks_with_credit ) : ?>
