@@ -2,7 +2,7 @@
 	<figure class="nh3-block-video">
     <div class="wp-media-wrapper">
       <video controls poster="<?php echo esc_url( $att['thumbnailUrl'] ); ?>">
-        <source src="<?php echo esc_url( $att['fileUrl'] ); ?>" type="<?php echo esc_url( $att['mimeType'] ); ?>">
+        <source src="<?php echo esc_url( $att['fileUrl'] ); ?>" type="<?php echo esc_attr( $att['mimeType'] ); ?>">
         <?php printf( esc_html__( 'Your browser does not support the %s element', 'nh3-mag-blocks' ), esc_html( '<video>' ) ); ?>
       </video>
     </div>
