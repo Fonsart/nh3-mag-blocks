@@ -2,8 +2,20 @@ import { Component } from '@wordpress/element';
 import { AUDIO_TYPE, GALLERY_TYPE, PHOTO_TYPE, STORY_TYPE, VIDEO_TYPE } from '../models/resources';
 import { DashIcon } from './dash-icon';
 
+/**
+ * Component that handles displaying a valid link data in the On Topic blocks
+ */
 export class LinkCard extends Component {
 
+  /**
+   * Constructs a LinkCard component.
+   * Depending on the value of the `content.type' prop, select the appropriate value for the `this.icon` property
+   * The component's props MUST contain those properties:
+   * * `content` - A Resource object representing the document
+   * * `url` - The URL that points to the document
+   * @see {@link ../models/resources.js}
+   * @param {Object} props Component's property
+   */
   constructor(props) {
     super(props);
     this.class = `nh3-mag-blocks-link-card ${this.props.content.type}`;

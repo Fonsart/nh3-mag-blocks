@@ -2,6 +2,12 @@ import { __ } from '@wordpress/i18n';
 import { TextareaControl } from '@wordpress/components';
 import { Component } from '@wordpress/element';
 
+/**
+ * Simple component that displays a "credit" textarea
+ * It requires at least two props:
+ * * `onChange` - Callback function called when the value of the textarea changes. Should accepts a single param which is the new value
+ * * `value` - The value of the textare
+ */
 export class Credit extends Component {
 
   render() {

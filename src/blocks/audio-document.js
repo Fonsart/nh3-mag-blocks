@@ -73,6 +73,10 @@ export default {
       </DocumentSelector>
     )
   },
+  /**
+   * Server-side rendered
+   * @see {@link ../../templates/audio-document.php}
+   */
   save() {
     return null;
   }

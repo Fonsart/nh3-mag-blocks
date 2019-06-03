@@ -1,3 +1,9 @@
+<?php
+/**
+ * Template used to display an NH3 Links block on the site
+ */
+?>
+
 <?php if ( array_key_exists( 'data', $att ) && ! empty( $att['data'] ) ) : ?>
 	<section class="on-topic-nh3-links">
 		<h3 class="on-topic-header"><?php esc_html_e( 'notreHistoire', 'nh3-mag-blocks' ); ?></h3>

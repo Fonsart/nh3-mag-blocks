@@ -7,10 +7,10 @@
 // French NH3 platform URL
 define( 'NH3_BLOCKS_ARCHIVE_URL', 'https://dev2.notrehistoire.ch' );
 
-// Plugin class prefixes
+// Plugin class prefixes - All classes MUST be prefixed with this in order for them to be auto-loaded
 define( 'NH3_BLOCKS_CLASS_PREFIX', 'NH3_Blocks' );
 
-// Site URLS
+// Site URLS - **Should match the URLs in the ./src/env/*.json file**
 define( 'NH3_BLOCKS_SITE_URLS', array(
   'fr' => 'https://dev2.notrehistoire.ch',
   'it' => 'https://dev.lanostrastoria.ch',
@@ -19,6 +19,8 @@ define( 'NH3_BLOCKS_SITE_URLS', array(
 
 /**
  * --- REGISTER AUTOLOADER ---
+ * Check that the class to load has the required prefix.
+ * Then generate the absolute path to the file, using the WordPress classes naming rules
  */
 spl_autoload_register(
 	function( $class_name ) {
@@ -32,4 +34,7 @@ spl_autoload_register(
 	}
 );
 
+/**
+ * --- Instanciate the plugin ---
+ */
 new NH3_Blocks_Plugin();

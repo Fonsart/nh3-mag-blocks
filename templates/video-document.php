@@ -1,3 +1,10 @@
+<?php
+/**
+ * Server-side template used to render `video-document` blocks on the site
+ * Will ONLY displays if the block contains a `fileUrl` property.
+ */
+?>
+
 <?php if ( isset( $att['fileUrl'] ) ) : ?>
 	<figure class="nh3-block-video">
     <div class="wp-media-wrapper">

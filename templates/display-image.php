@@ -2,7 +2,7 @@
 /**
  * Template used to display both Featured Images and Photo Documents
  * The presence of a $size = 'full' indicates that the image is a featured image and all content should be displayed
- * This value is also used to add or remove a surrounding div.wp-media-wrapper around the img tag
+ * This value is also used to add or remove a surrounding `div.wp-media-wrapper` around the img tag
  */
 ?>
 <?php $nh3_blocks_with_caption = isset($att['caption']) && (!isset($size) || 'mini' !== $size); ?>

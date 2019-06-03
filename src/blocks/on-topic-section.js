@@ -13,6 +13,10 @@ import { Alert } from '../components/alert';
  */
 const ALLOWED_BLOCKS = [];
 
+/**
+ * Block that can contain links blocks, such as NH3 Links or SSR Links.
+ * Can only contains blocks that have been registered with this block as their parents.
+ */
 export default {
   title: __('"On Topic" Section'),
   icon: 'category',
@@ -34,6 +38,7 @@ export default {
    * but the main block is still rendered on the server side.
    * The inner block content is available to the server-side render function in the $content argument.
    * It contains the rendered inner blocks (which can also be server-rendered).
+   * @see {@link ../../templates/on-topic-section.php}
    */
   save() {
     return <InnerBlocks.Content />;

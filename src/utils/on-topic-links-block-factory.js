@@ -62,6 +62,11 @@ export function makeOnTopicBlockDefinition({ title, sectionTitle }) {
         </div>
       )
     },
+    /**
+     * Server-side rendered.
+     * @see {@link ../../templates/on-topic-nh3-links.php}
+     * @see {@link ../../templates/on-topic-ssr-links.php}
+     */
     save() {
       return null;
     }

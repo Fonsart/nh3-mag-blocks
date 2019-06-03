@@ -46,6 +46,9 @@ export default {
    */
   edit({ attributes, setAttributes }) {
 
+    /**
+     * Filter the entry object received from the API
+     */
     function processVideoEntry(entry) {
       return {
         id: entry.media.id,
@@ -55,7 +58,12 @@ export default {
       }
     }
 
-    function resetAudioDocument() {
+    /**
+     * Reset the document attributes
+     * Used when an error occurs with the provided link so that the state is clean.
+     * Only the credit and caption attributes are kept (to avoid the user having to retype it if it made a mistake)
+     */
+    function resetVideoDocument() {
       setAttributes({
         id: undefined,
         fileUrl: undefined,
@@ -73,7 +81,7 @@ export default {
         processor={processVideoEntry}
         setDocumentState={setAttributes}
         document={attributes}
-        onError={resetAudioDocument}>
+        onError={resetVideoDocument}>
         {attributes.fileUrl &&
           <div>
             <video controls poster={attributes.thumbnailUrl} onerror={error => console.log('video', error)}>
@@ -87,6 +95,10 @@ export default {
       </DocumentSelector>
     )
   },
+  /**
+   * Server-side rendered
+   * @see {@link ../../templates/video-document.php}
+   */
   save() {
     return null;
   }

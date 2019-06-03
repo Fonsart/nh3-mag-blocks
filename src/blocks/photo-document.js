@@ -83,6 +83,10 @@ export default {
       </DocumentSelector>
     )
   },
+  /**
+   * Server-side rendered
+   * @see {@link ../../templates/photo-document.php}
+   */
   save() {
     return null
   },

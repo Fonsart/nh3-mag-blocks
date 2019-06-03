@@ -1,3 +1,10 @@
+<?php
+/**
+ * Server-side template used to render `audio-document` blocks on the site
+ * Will ONLY displays if the block contains a `fileUrl` property.
+ */
+?>
+
 <?php if ( isset( $att['fileUrl'] ) ) : ?>
 	<figure class="nh3-block-audio">
     <div class="wp-media-wrapper">

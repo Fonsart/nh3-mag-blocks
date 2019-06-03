@@ -1,17 +1,47 @@
+/**
+ * Exports the transforms function/objects used in the register blocks
+ * @see {@link .blocks/audio-document.js}
+ * @see {@link .blocks/video-document.js}
+ * @see {@link .blocks/photo-document.js}
+ */
 import { createBlock } from '@wordpress/blocks';
 
+/**
+ * Object that can be used in a block registrration to indicate that it can be transformed to a `video-document` block
+ */
 export const toVideo = transformBlock('video');
+/**
+ * Object that can be used in a block registrration to indicate that it can be transformed to a `video-document` block
+ */
 export const toPhoto = transformBlock('photo');
+/**
+ * Object that can be used in a block registrration to indicate that it can be transformed to a `video-document` block
+ */
 export const toAudio = transformBlock('audio');
 
+/**
+ * Factory that generates a transform object indicating to which `block` the `video-document` block could transform.
+ * @param {string} block The prefix of the target document block
+ * @returns {Object}
+ */
 export function fromVideoTo(block) {
   return transformBlock('video', block);
 }
 
+/**
+ * Factory that generates a transform object indicating to which `block` the `audio-document` block could transform.
+ * @param {string} block The prefix of the target document block
+ * @returns {Object}
+ */
 export function fromAudioTo(block) {
   return transformBlock('audio', block);
 }
 
+/**
+ * Factory that generates a transform object indicating to which `block` the `photo-document` block could transform.
+ * @param {string} block The prefix of the target document block
+ * @returns {Object}
+ */
 export function fromPhotoTo(block) {
   return transformBlock('photo', block);
 }

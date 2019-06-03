@@ -9,10 +9,14 @@ import blockArchiveImage from './blocks/photo-document';
 import blockArchiveVideo from './blocks/video-document';
 import { CustomFeaturedImage } from './components/custom-featured-image';
 
+// Global namespace for all the registered blocks
 const NAMESPACE = 'nh3';
 
 /**
  * Register the blocks
+ * To register a new block, add a new item to this array with the following properties:
+ * * `name` - The name of the new block, without the namespace. It will be registered under the global nh3 namespace
+ * * `definition` - An block registration object, as defined in the WordPress documentation {@link https://developer.wordpress.org/block-editor/developers/block-api/block-registration/}
  */
 [
   { name: 'photo-document', definition: blockArchiveImage },
@@ -27,9 +31,11 @@ const NAMESPACE = 'nh3';
 
 /**
  * Compose a FeaturedImage component
+ * @see {@link ./components/custom-featured-image.js}
  */
 const FeaturedImage = compose(
   withSelect((select, props) => {
+    // Get the featured image JSON data (if it exists) from the database
     const meta = select('core/editor').getEditedPostAttribute('meta')[ props.metaFieldName ];
     const data = meta ? JSON.parse(meta) : {};
     return {
@@ -42,9 +48,12 @@ const FeaturedImage = compose(
   }),
   withDispatch((dispatch, props) => {
     return {
+      /**
+       * Update the post meta by serializing the featured image properties into a JSON object.
+       * @param {Object} metaProps The post's featured image properties
+       */
       setMeta: function(metaProps) {
         const metaObj = { meta: { [ props.metaFieldName ]: JSON.stringify(metaProps) } };
-        console.log('FeaturedImage.setMeta', metaObj, props);
         dispatch('core/editor').editPost(metaObj);
       }
     }
@@ -58,6 +67,9 @@ function replacePostFeaturedImage() {
   return () => <FeaturedImage metaFieldName="nh3_mag_custom_featured_image_field" />;
 }
 
+/**
+ * Replace the native Featured Image with the custom featured image component
+ */
 wp.hooks.addFilter(
   'editor.PostFeaturedImage',
   'my-plugin/replace-post-featured-image',

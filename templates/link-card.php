@@ -1,4 +1,9 @@
-<?php // var_dump(NH3_BLOCKS_SITE_URLS[ $nh3_blocks_link->resource->platform ]); ?>
+<?php
+/**
+ * Template used to display a link card on the site.
+ */
+?>
+
 <a class="on-topic__nav-item on-topic__<?php echo esc_attr( $nh3_blocks_link->resource->type ); ?>" href="<?php echo esc_url( $nh3_blocks_link->url ); ?>" target="_blank">
   <!-- Media cover -->
   <figure class="on-topic__nav-item__cover">
