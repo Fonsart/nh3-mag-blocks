@@ -1,17 +1,17 @@
 {
   "fr": {
     "siteUrl": "https://url-for-french-platform",
-    "apiUri": "/uri/to/the/api/endpoint",
+    "apiPath": "/uri/to/the/api/endpoint",
     "apiToken": "French-Platform-Api-Access-Token"
   },
   "it": {
     "siteUrl": "https://url-for-italian-platform",
-    "apiUri": "/uri/to/the/api/endpoint",
+    "apiPath": "/uri/to/the/api/endpoint",
     "apiToken": "Italian-Platform-Api-Access-Token"
   },
   "rm": {
     "siteUrl": "https://url-for-rumansch-platform",
-    "apiUri": "/uri/to/the/api/endpoint",
+    "apiPath": "/uri/to/the/api/endpoint",
     "apiToken": "Rumansch-Platform-Api-Access-Token"
   }
 }

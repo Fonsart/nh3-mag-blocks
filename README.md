@@ -93,6 +93,23 @@ Additionaly, the core blocks have been tweeked so that some of their actions are
   ```
   $> npm start
   ```
+## Environment file
+
+To be able to build the plugin in different environment, you'll need to create an environment file for each of them.
+
+To do so, head to `./src/env/` folder, and make a copy of the `sample.json` file for each environment, and rename them with the environment name.
+
+There's two environment already supported by the build scripts: `development` and `production`. Thus, you'll need at least a `development.json` and `production.json` files.
+
+Once the filed are created, open them and replace the value with your own.
+
+The environment file describes an object, whose properties are named according to a language slug (`fr`, `it` and `rm` for French, Italian and Rumansch respectively) and whose values are objects containing each platform configuration. All these configuration object have the same properties:
+
+* `siteUrl` - The URL pointing to the platform site ; without the trailing slash (so, `site.com` instead of `site.com/`).
+* `apiPath` - The path added to the `siteUrl` that points to the API entrypoint ; MUST start with a leading slash (so `/api/v1` instead of `api/v1`).
+* `apiToken` - A token that grants at least reading rights for this platform API.
+
+> To support a new NH platform, simply add a new property with the language slug (for example `de`), whose value is an object as describe above.
 
 ## Scripts
 
