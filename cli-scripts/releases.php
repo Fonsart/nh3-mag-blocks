@@ -143,7 +143,9 @@ class Releases {
 	 */
 	private static function bumpVersionNumber( $type ) {
 		$versions = array();
-		exec( 'git tag -l', $tags ); // Get git tags
+    exec( 'git tag -l', $tags ); // Get git tags
+    // Sort tag in their natural order, so that x.x.10 is after x.x.9
+    natsort( $tags );
 		if ( sizeof( $tags ) !== 0 ) {
 			$versions['last'] = end( $tags );
 		} elseif ( file_exists( 'plugin.json' ) ) {
