@@ -13,15 +13,18 @@ import { LinkCard } from './link-card';
  */
 export class LinkContent extends Component {
 
-  constructor(props) {
-    super(props);
+  /**
+   * Whenever this component receive new props from its parent, reevaluates what its content should be
+   * @param {Object} newProps The new props
+   */
+  componentWillReceiveProps(newProps) {
     // Define content based on the value prop
-    if (!this.props.value.resource) {
-      this.content = <Alert content={<span><span class="url">"{this.props.value.url}"</span> {__('does not match any existing resource')}</span>} />;
-    } else if (this.props.value.resource.error) {
-      this.content = <Alert content={<span><span class="url">"{this.props.value.url}"</span> {this.props.value.resource.error}</span>} />;
+    if (!newProps.value.resource) {
+      this.content = <Alert content={<span><span class="url">"{newProps.value.url}"</span> {__('does not match any existing resource')}</span>} />;
+    } else if (newProps.value.resource.error) {
+      this.content = <Alert content={<span><span class="url">"{newProps.value.url}"</span> {newProps.value.resource.error}</span>} />;
     } else {
-      this.content = <LinkCard content={this.props.value.resource} url={this.props.value.url} />;
+      this.content = <LinkCard content={newProps.value.resource} url={newProps.value.url} />;
     }
   }
 
