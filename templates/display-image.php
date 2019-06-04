@@ -9,12 +9,17 @@
 <?php $nh3_blocks_with_credit = isset($att['credit']) && (!isset($size) || 'mini' !== $size); ?>
 <?php if (isset( $att['fileUrl'] ) ) : ?>
 
-  <?php if (isset( $size ) && 'mini' === $size ) : ?>
-    <img src="<?php echo esc_attr( $att['fileUrl'] ); ?>"/>
-  <?php else: ?>
-    <div class="wp-media-wrapper">
-      <img src="<?php echo esc_attr( $att['fileUrl'] ); ?>"/>
-    </div>
+  <?php // Add wrapper div if no $size value, or a $size value different thant 'mini' ?>
+  <?php if ( ! isset( $size ) || 'mini' !== $size ) : ?>
+  <div class="wp-media-wrapper">
+  <?php endif; ?>
+      <img
+        width="<?php echo esc_attr( isset( $att['width'] ) ? $att['width'] : '' ); ?>"
+        height="<?php echo esc_attr( isset( $att['height'] ) ? $att['height'] : '' ); ?>"
+        alt="<?php echo esc_attr( isset( $att['title'] ) ? $att['title'] : '' ); ?>"
+        src="<?php echo esc_attr( $att['fileUrl'] ); ?>"/>
+  <?php if ( ! isset( $size ) || 'mini' !== $size ) : ?>
+  </div>
   <?php endif; ?>
 
   <?php if ( $nh3_blocks_with_caption || $nh3_blocks_with_credit ) : ?>

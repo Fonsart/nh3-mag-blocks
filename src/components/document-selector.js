@@ -39,7 +39,7 @@ export class DocumentSelector extends Component {
     };
 
     this.init();
-    conslog(this);
+    conslog('[DocumentSelector - constructor]', this);
   }
 
   /**
@@ -68,6 +68,8 @@ export class DocumentSelector extends Component {
       });
       this.props.setDocumentState(mappedEntry);
       this.hasLoaded();
+    } else if (this.state.documentUrl) {
+      this.onUrlChange(this.state.documentUrl);
     }
   }
 

@@ -1,0 +1,26 @@
+.nh3-mag-featured-image-caption {
+  width: 100%;
+}
+
+.nh3-mag-custom-featured-image {
+  .nh3-mag-blocks-document-selector {
+    .components-notice {
+
+      &.is-error,
+      &.is-warning,
+      &.is-success,
+      &.is-info {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
+        margin: 0;
+        padding: 6px 12px;
+
+        .components-notice__content {
+          font-size: 13px;
+          line-height: 1.3em;
+          margin: 8px 0;
+        }
+      }
+    }
+  }
+
+}

@@ -4,6 +4,7 @@ import { Caption } from './caption';
 import { Credit } from './credit';
 import { Component } from '@wordpress/element/build/react';
 import { PHOTO_TYPE } from '../models/resources';
+import { calculateDimensions } from '../utils/misc';
 
 /**
  * Component used in a post sidebar that replace the default Featured Image block
@@ -16,6 +17,9 @@ export class CustomFeaturedImage extends Component {
    * @param {string} props.hash The document's hash
    * @param {string} props.platform The document's platform
    * @param {string} props.fileUrl The document's file URL
+   * @param {string} props.width The document's file width
+   * @param {string} props.height The document's file height
+   * @param {string} props.title The document's file title
    * @param {string} props.caption The document's caption
    * @param {string} props.credit The document's credit
    */
@@ -26,6 +30,9 @@ export class CustomFeaturedImage extends Component {
       hash: props.hash,
       platform: props.platform,
       fileUrl: props.fileUrl,
+      width: props.width,
+      height: props.height,
+      title: props.title,
       caption: props.caption,
       credit: props.credit
     }
@@ -37,8 +44,8 @@ export class CustomFeaturedImage extends Component {
    * @see CustomFeaturedImage#constructor
    * @param {Object} newProps The new properties
    */
-  componentWillReceiveProps({ hash, platform, fileUrl, caption, credit }) {
-    this.setState({ hash, platform, fileUrl, caption, credit });
+  componentWillReceiveProps({ hash, platform, fileUrl, width, height, title, caption, credit }) {
+    this.setState({ hash, platform, fileUrl, width, height, title, caption, credit });
   }
 
   /**
@@ -46,8 +53,11 @@ export class CustomFeaturedImage extends Component {
    * @param {Object} entry An API entry object
    */
   processEntry(entry) {
+    const dim = calculateDimensions(entry.media.width, entry.media.height);
     return {
-      fileUrl: entry.media.thumbnail_url
+      fileUrl: entry.media.thumbnail_url,
+      title: entry.title,
+      ...dim
     };
   }
 
@@ -56,9 +66,9 @@ export class CustomFeaturedImage extends Component {
    * Then update the post meta value.
    * @param {Object} props Document object
    */
-  updateState({ hash, fileUrl, platform }) {
+  updateState({ hash, fileUrl, width, height, title, platform }) {
     this.setState(
-      { hash, fileUrl, platform },
+      { hash, fileUrl, width, height, title, platform },
       () => this.props.setMeta(this.state)
     );
   }
@@ -72,6 +82,9 @@ export class CustomFeaturedImage extends Component {
         hash: null,
         platform: null,
         fileUrl: null,
+        width: null,
+        height: null,
+        title: null,
         caption: null,
         credit: null
       },

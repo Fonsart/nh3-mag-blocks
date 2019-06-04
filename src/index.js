@@ -42,6 +42,9 @@ const FeaturedImage = compose(
       hash: data.hash,
       platform: data.platform,
       fileUrl: data.fileUrl,
+      width: data.width,
+      height: data.height,
+      title: data.title,
       caption: data.caption,
       credit: data.credit
     };

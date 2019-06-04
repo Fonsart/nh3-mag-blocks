@@ -40,3 +40,12 @@ export function conslog(...args) {
     console.log(...args);
   }
 }
+
+export function calculateDimensions(width, height) {
+  // This seems to be the constant width value for thumbnail images
+  const DEFAULT_WIDTH = 770;
+  return {
+    width: DEFAULT_WIDTH,
+    height: Math.round(height * DEFAULT_WIDTH / width)
+  }
+}

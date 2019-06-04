@@ -46,7 +46,7 @@ export async function getLinkContentPromise(url) {
     dataCache[ url ] = data;
   }
 
-  conslog(data);
+  conslog('[Link Management - getLinkContentPromise]', data);
 
   return data;
 }
@@ -102,7 +102,7 @@ export function parseUrl(url) {
  * @returns {Resource|Object|null}
  */
 function filterResourceData(resourceData) {
-  conslog(resourceData);
+  conslog('[Link Management - filterResourceData]', resourceData);
   if (resourceData.type === Links.STORY_TYPE) {
     return new Links.ResourceStory(resourceData);
     // If no media_type, let's assume it's a gallery
