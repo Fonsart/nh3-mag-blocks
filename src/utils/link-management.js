@@ -1,7 +1,7 @@
 import { __ } from '@wordpress/i18n';
 
 import { ENV } from '../env';
-import { print, fromUrl, escapeRegExp } from '../utils/misc';
+import { conslog, fromUrl, escapeRegExp } from '../utils/misc';
 import { fetchEntryByHash, ENTRY_PATH } from '../service/entries';
 import { fetchGalleryBySlug, GALLERY_PATH } from '../service/galleries';
 import { fetchUserById } from '../service/users';
@@ -45,6 +45,8 @@ export async function getLinkContentPromise(url) {
     data.resource.platform = urlProps.platform;
     dataCache[ url ] = data;
   }
+
+  conslog(data);
 
   return data;
 }
@@ -100,7 +102,7 @@ export function parseUrl(url) {
  * @returns {Resource|Object|null}
  */
 function filterResourceData(resourceData) {
-  print(resourceData);
+  conslog(resourceData);
   if (resourceData.type === Links.STORY_TYPE) {
     return new Links.ResourceStory(resourceData);
     // If no media_type, let's assume it's a gallery

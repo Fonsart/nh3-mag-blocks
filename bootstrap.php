@@ -12,9 +12,9 @@ define( 'NH3_BLOCKS_CLASS_PREFIX', 'NH3_Blocks' );
 
 // Site URLS - **Should match the URLs in the ./src/env/*.json file**
 define( 'NH3_BLOCKS_SITE_URLS', array(
-  'fr' => 'https://dev2.notrehistoire.ch',
-  'it' => 'https://dev.lanostrastoria.ch',
-  'rm' => 'https://dev.nossaistorgia.ch'
+  'fr' => 'https://notrehistoire.ch',
+  'it' => 'https://lanostrastoria.ch',
+  'rm' => 'https://nossaistorgia.ch'
 ) );
 
 /**

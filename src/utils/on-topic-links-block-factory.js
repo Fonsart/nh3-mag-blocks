@@ -34,11 +34,14 @@ export function makeOnTopicBlockDefinition({ title, sectionTitle }) {
       const linksData = getData();
 
       if (!attributes.init) {
-        // When init, rebuild the textarea content from the component's data
-        setAttributes({
-          linkString: linksData.map(link => link.url).join('\n'),
-          init: true
-        })
+        // When init, replace dev URLs by production URLs
+        linksData.forEach(link => {
+          link.url = link.url.replace(/^(https:\/\/)dev(2)?\./, '$1');
+          return link;
+        });
+        // When init, rebuild the textarea content from the component's data and refetch the documents
+        onLinkStringChange(linksData.map(link => link.url).join('\n'));
+        setAttributes({ init: true });
       }
 
       /**
@@ -50,6 +53,7 @@ export function makeOnTopicBlockDefinition({ title, sectionTitle }) {
       async function onLinkStringChange(value) {
         const links = uniqLink(value.split(/\n/));
         setAttributes({ linkString: links.join('\n') });
+        // links.filter(Boolean) removes empty lines befores trying to fetch the links content
         let apiResults = await Promise.all(links.filter(Boolean).map(getLinkContentPromise));
         setData(apiResults);
       }

@@ -35,7 +35,7 @@ export function escapeRegExp(string) {
  * A wrapper around console.log that logs only in development environment
  * @param  {...any} args The values to print to the console
  */
-export function print(...args) {
+export function conslog(...args) {
   if (ENV.name === 'development') {
     console.log(...args);
   }

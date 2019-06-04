@@ -93,6 +93,7 @@ Additionaly, the core blocks have been tweeked so that some of their actions are
   ```
   $> npm start
   ```
+
 ## Environment file
 
 To be able to build the plugin in different environment, you'll need to create an environment file for each of them.
@@ -106,10 +107,30 @@ Once the filed are created, open them and replace the value with your own.
 The environment file describes an object, whose properties are named according to a language slug (`fr`, `it` and `rm` for French, Italian and Rumansch respectively) and whose values are objects containing each platform configuration. All these configuration object have the same properties:
 
 * `siteUrl` - The URL pointing to the platform site ; without the trailing slash (so, `site.com` instead of `site.com/`).
+* `proxyUrl` - **Remove this property in a production environment file!** The URL pointing to the proxy for this platform site ; without the trailing slash (so, `localhost:123` instead of `localhost:123/`).
 * `apiPath` - The path added to the `siteUrl` that points to the API entrypoint ; MUST start with a leading slash (so `/api/v1` instead of `api/v1`).
 * `apiToken` - A token that grants at least reading rights for this platform API.
 
 > To support a new NH platform, simply add a new property with the language slug (for example `de`), whose value is an object as describe above.
+
+## Platform URLs
+
+The platform URLs are defined in several places, meaning that changing an URL somewhere implies changing this URL everywhere it's used.
+
+You'll find those URLs in:
+* ENV files ; as the `siteUrl` property of each platform
+* `bootstrap.php` file ; in the `NH3_BLOCKS_SITE_URLS` that is used to generate the link to an NH document when rendering it on its template
+* `package.json` file ; in the `proxy:xx` scripts as the proxied URL for a platform
+
+### Proxy
+
+To use a proxy for the platform URLs, you'll need to add a `proxyUrl` property for each platform in the development environment file.
+
+Do not remove the `siteUrl` though, as it is used to validate the URls pasted in the document and links blocks.
+
+If a `proxyUrl` is present in the ENV, it will be used instead of the `siteUrl` when fetching the document or links.
+
+> The `npm start` script already generates proxies for the three default platform. Check the proxy URLs in the [package.json](./package.json#L12) file.
 
 ## Scripts
 

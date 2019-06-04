@@ -1,16 +1,19 @@
 {
   "fr": {
     "siteUrl": "https://url-for-french-platform",
+    "proxyUrl": "REMOVE THIS ON PRODUCTION. On development, URL of the proxy for this platform",
     "apiPath": "/uri/to/the/api/endpoint",
     "apiToken": "French-Platform-Api-Access-Token"
   },
   "it": {
     "siteUrl": "https://url-for-italian-platform",
+    "proxyUrl": "REMOVE THIS ON PRODUCTION. On development, URL of the proxy for this platform",
     "apiPath": "/uri/to/the/api/endpoint",
     "apiToken": "Italian-Platform-Api-Access-Token"
   },
   "rm": {
     "siteUrl": "https://url-for-rumansch-platform",
+    "proxyUrl": "REMOVE THIS ON PRODUCTION. On development, URL of the proxy for this platform",
     "apiPath": "/uri/to/the/api/endpoint",
     "apiToken": "Rumansch-Platform-Api-Access-Token"
   }

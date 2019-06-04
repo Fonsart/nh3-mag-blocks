@@ -5,7 +5,7 @@ import capitalize from 'lodash.capitalize';
 import { ENV } from '../env';
 import { ENTRY_PATH, fetchEntryByHash, fetchEntryByMediaId } from "../service/entries";
 import { parseUrl } from "../utils/link-management";
-import { fromUrl, print } from "../utils/misc";
+import { fromUrl, conslog } from "../utils/misc";
 import { Alert } from "./alert";
 import { Spinner } from "./spinner";
 
@@ -39,7 +39,7 @@ export class DocumentSelector extends Component {
     };
 
     this.init();
-    print(this);
+    conslog(this);
   }
 
   /**
