@@ -2,7 +2,7 @@ import { __ } from '@wordpress/i18n';
 import { DocumentSelector } from './document-selector';
 import { Caption } from './caption';
 import { Credit } from './credit';
-import { Component } from '@wordpress/element/build/react';
+import { Component } from '@wordpress/element';
 import { PHOTO_TYPE } from '../models/resources';
 import { calculateDimensions } from '../utils/misc';
 
@@ -10,7 +10,6 @@ import { calculateDimensions } from '../utils/misc';
  * Component used in a post sidebar that replace the default Featured Image block
  */
 export class CustomFeaturedImage extends Component {
-
   /**
    * Construct a new component
    * @param {Object} props The component's properties
@@ -35,7 +34,7 @@ export class CustomFeaturedImage extends Component {
       title: props.title,
       caption: props.caption,
       credit: props.credit
-    }
+    };
   }
 
   /**
@@ -44,8 +43,26 @@ export class CustomFeaturedImage extends Component {
    * @see CustomFeaturedImage#constructor
    * @param {Object} newProps The new properties
    */
-  componentWillReceiveProps({ hash, platform, fileUrl, width, height, title, caption, credit }) {
-    this.setState({ hash, platform, fileUrl, width, height, title, caption, credit });
+  componentWillReceiveProps({
+    hash,
+    platform,
+    fileUrl,
+    width,
+    height,
+    title,
+    caption,
+    credit
+  }) {
+    this.setState({
+      hash,
+      platform,
+      fileUrl,
+      width,
+      height,
+      title,
+      caption,
+      credit
+    });
   }
 
   /**
@@ -67,9 +84,8 @@ export class CustomFeaturedImage extends Component {
    * @param {Object} props Document object
    */
   updateState({ hash, fileUrl, width, height, title, platform }) {
-    this.setState(
-      { hash, fileUrl, width, height, title, platform },
-      () => this.props.setMeta(this.state)
+    this.setState({ hash, fileUrl, width, height, title, platform }, () =>
+      this.props.setMeta(this.state)
     );
   }
 
@@ -97,10 +113,7 @@ export class CustomFeaturedImage extends Component {
    * @param {string} caption The new caption
    */
   setCaption(caption) {
-    this.setState(
-      { caption },
-      () => this.props.setMeta(this.state)
-    );
+    this.setState({ caption }, () => this.props.setMeta(this.state));
   }
 
   /**
@@ -108,10 +121,7 @@ export class CustomFeaturedImage extends Component {
    * @param {string} credit The new credit
    */
   setCredit(credit) {
-    this.setState(
-      { credit },
-      () => this.props.setMeta(this.state)
-    );
+    this.setState({ credit }, () => this.props.setMeta(this.state));
   }
 
   /**
@@ -125,17 +135,23 @@ export class CustomFeaturedImage extends Component {
           processor={entry => this.processEntry(entry)}
           setDocumentState={changes => this.updateState(changes)}
           document={this.state}
-          onError={() => this.handleError()}>
-          {this.state.fileUrl &&
+          onError={() => this.handleError()}
+        >
+          {this.state.fileUrl && (
             <div>
               <img src={this.state.fileUrl} />
-              <Caption onChange={caption => this.setCaption(caption)} value={this.state.caption} />
-              <Credit onChange={credit => this.setCredit(credit)} value={this.state.credit} />
+              <Caption
+                onChange={caption => this.setCaption(caption)}
+                value={this.state.caption}
+              />
+              <Credit
+                onChange={credit => this.setCredit(credit)}
+                value={this.state.credit}
+              />
             </div>
-          }
+          )}
         </DocumentSelector>
-      </div >
-    )
+      </div>
+    );
   }
-
 }
