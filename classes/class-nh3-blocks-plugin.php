@@ -35,6 +35,7 @@ if ( ! class_exists( 'NH3_Blocks_Plugin' ) ) {
       add_filter( 'allowed_block_types', array( $this, 'whitelist_blocks') );
     }
 
+
     /**
      * Actions done in the `init` WordPress hook.
      */
@@ -91,7 +92,29 @@ if ( ! class_exists( 'NH3_Blocks_Plugin' ) ) {
         filemtime( plugin_dir_path( NH3_BLOCKS_MAIN_FILE ) . 'build/index.js' )
       );
 
+      wp_register_script(
+        'nh3-mag-blocks-frontend',
+        plugins_url( 'templates/vendors/video.min.js', NH3_BLOCKS_MAIN_FILE ),
+        array(),
+        filemtime( plugin_dir_path( NH3_BLOCKS_MAIN_FILE ) . 'templates/vendors/video.min.js' ),
+        true // Enqueue the script in the footer.
+      );
+
       // Block CSS in the editor
+      wp_register_style(
+        'nh3-mag-blocks-style-editor',
+        plugins_url( 'build/css/editor.css', NH3_BLOCKS_MAIN_FILE ),
+        array( 'wp-edit-blocks' ),
+        filemtime( plugin_dir_path( NH3_BLOCKS_MAIN_FILE ) . 'build/css/editor.css' )
+      );
+
+      wp_register_style(
+        'nh3-mag-blocks-style',
+        plugins_url( 'build/css/style.css', NH3_BLOCKS_MAIN_FILE ),
+        array(),
+        filemtime( plugin_dir_path( NH3_BLOCKS_MAIN_FILE ) . 'build/css/style.css' )
+      );
+
       wp_register_style(
         'nh3-mag-blocks-style-editor',
         plugins_url( 'build/css/editor.css', NH3_BLOCKS_MAIN_FILE ),
@@ -103,6 +126,8 @@ if ( ! class_exists( 'NH3_Blocks_Plugin' ) ) {
       foreach ( self::BLOCKS as $block_name ) {
         register_block_type(
           "nh3/$block_name", array(
+            'style'           => 'nh3-mag-blocks-style',
+            'script'          => 'nh3-mag-blocks-frontend',
             'editor_script'   => 'nh3-mag-blocks',
             'editor_style'    => 'nh3-mag-blocks-style-editor',
             'render_callback' => $this->generate_template_loader( $block_name ),

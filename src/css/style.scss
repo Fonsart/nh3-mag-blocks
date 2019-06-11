@@ -1,0 +1,12 @@
+@import 'vendors/video-js.min.scss';
+
+.video-js .vjs-big-play-button {
+  font-size: 6em;
+}
+
+.video-js .vjs-big-play-button,
+.video-js .vjs-big-play-button:focus,
+.video-js:hover .vjs-big-play-button {
+  border: 0;
+  background: none;
+}

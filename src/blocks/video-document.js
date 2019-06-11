@@ -1,5 +1,6 @@
 import { __ } from '@wordpress/i18n';
 import capitalize from 'lodash.capitalize';
+import { VideoPlayer } from '../components/video-player';
 import { Caption } from '../components/caption';
 import { Credit } from '../components/credit';
 import { DocumentSelector } from '../components/document-selector';
@@ -11,29 +12,27 @@ export default {
   icon: 'format-video',
   category: 'nh3-mag-blocks',
   transforms: {
-    from: [ fromAudioTo('video'), fromPhotoTo('video') ],
-    to: [ toAudio, toPhoto ]
+    from: [fromAudioTo('video'), fromPhotoTo('video')],
+    to: [toAudio, toPhoto]
   },
   supports: {
     customClassName: false
   },
   attributes: {
-    fileUrl: // The video url
-      { type: 'string' },
-    thumbnailUrl: // The video thumbnail url
-      { type: 'string' },
-    caption: // The video caption (input by the CMS user)
-      { type: 'string' },
-    hash: // The hash id of the document
-      { type: 'string' },
-    id: // The video id
-      { type: 'integer' },
-    mimeType: // The video MIME type
-      { type: 'string' },
-    platform:
-      { type: 'string' },
-    credit:
-      { type: 'string'}
+    // The video url
+    fileUrl: { type: 'string' },
+    // The video thumbnail url
+    thumbnailUrl: { type: 'string' },
+    // The video caption (input by the CMS user)
+    caption: { type: 'string' },
+    // The hash id of the document
+    hash: { type: 'string' },
+    // The video id
+    id: { type: 'integer' },
+    // The video MIME type
+    mimeType: { type: 'string' },
+    platform: { type: 'string' },
+    credit: { type: 'string' }
   },
 
   /**
@@ -45,7 +44,6 @@ export default {
    * @return JSX ECMAScript Markup for the editor
    */
   edit({ attributes, setAttributes }) {
-
     /**
      * Filter the entry object received from the API
      */
@@ -55,7 +53,7 @@ export default {
         fileUrl: entry.media.file_url,
         thumbnailUrl: entry.cover_url || entry.media.thumbnail_url,
         mimeType: entry.media.mime_type
-      }
+      };
     }
 
     /**
@@ -71,8 +69,28 @@ export default {
         mimeType: undefined,
         hash: undefined,
         platform: undefined
-      })
+      });
     }
+
+    const videoJsOptions = {
+      autoplay: false,
+      controls: true,
+      loadingSpinner: false,
+      bigPlayButton: true,
+      textTrackDisplay: false,
+      errorDisplay: false,
+      textTrackSettings: false,
+      poster: attributes.thumbnailUrl,
+      fluid: true,
+      techOrder: ['html5'],
+      preload: 'auto',
+      sources: [
+        {
+          src: attributes.fileUrl,
+          type: attributes.mimeType
+        }
+      ]
+    };
 
     return (
       <DocumentSelector
@@ -81,19 +99,23 @@ export default {
         processor={processVideoEntry}
         setDocumentState={setAttributes}
         document={attributes}
-        onError={resetVideoDocument}>
-        {attributes.fileUrl &&
-          <div>
-            <video controls poster={attributes.thumbnailUrl} onerror={error => console.log('video', error)}>
-              <source src={attributes.fileUrl} type={attributes.mimeType} />
-              Your browser does not support the <code>video</code> element.
-            </video>
-            <Caption onChange={caption => setAttributes({ caption })} value={attributes.caption} />
-            <Credit onChange={credit => setAttributes({ credit })} value={attributes.credit} />
+        onError={resetVideoDocument}
+      >
+        {attributes.fileUrl && (
+          <div data-vjs-player>
+            <VideoPlayer {...videoJsOptions} />
+            <Caption
+              onChange={caption => setAttributes({ caption })}
+              value={attributes.caption}
+            />
+            <Credit
+              onChange={credit => setAttributes({ credit })}
+              value={attributes.credit}
+            />
           </div>
-        }
+        )}
       </DocumentSelector>
-    )
+    );
   },
   /**
    * Server-side rendered
@@ -102,4 +124,4 @@ export default {
   save() {
     return null;
   }
-}
+};

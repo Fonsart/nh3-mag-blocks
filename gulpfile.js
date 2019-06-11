@@ -17,11 +17,7 @@ const zipPath = [
   'languages/nh3-mag-blocks.pot',
   'templates/**/*'
 ];
-const potFiles = [
-  'classes/**/*.php',
-  'templates/**/*.php',
-  '*.php'
-]
+const potFiles = ['classes/**/*.php', 'templates/**/*.php', '*.php'];
 
 /**
  * 'zip' task function.
@@ -31,9 +27,9 @@ const potFiles = [
 function makeZip() {
   return gulp
     .src(zipPath, { base: '.' })
-    .pipe(rename((file) => file.dirname = `${pluginName}/${file.dirname}`))
+    .pipe(rename(file => (file.dirname = `${pluginName}/${file.dirname}`)))
     .pipe(zip(`${pluginName}.zip`))
-    .pipe(gulp.dest('.'))
+    .pipe(gulp.dest('.'));
 }
 
 /**
@@ -43,7 +39,17 @@ function buildCss() {
   return gulp
     .src('./src/css/editor.scss')
     .pipe(sass().on('error', sass.logError))
-    .pipe(gulp.dest('./build/css/'))
+    .pipe(gulp.dest('./build/css/'));
+}
+
+/**
+ * Currently only copy the css from the source forlder to the build folder.
+ */
+function buildCssGeneral() {
+  return gulp
+    .src('./src/css/style.scss')
+    .pipe(sass().on('error', sass.logError))
+    .pipe(gulp.dest('./build/css/'));
 }
 
 /**
@@ -52,11 +58,13 @@ function buildCss() {
 function buildPot() {
   return gulp
     .src(potFiles)
-    .pipe(wpPot({
-      domain: package.wp.textDomain,
-      package: package.wp.pluginName
-    }))
-    .pipe(gulp.dest(`./languages/${package.wp.textDomain}.pot`))
+    .pipe(
+      wpPot({
+        domain: package.wp.textDomain,
+        package: package.wp.pluginName
+      })
+    )
+    .pipe(gulp.dest(`./languages/${package.wp.textDomain}.pot`));
 }
 
 /**
@@ -64,6 +72,10 @@ function buildPot() {
  */
 function watchCss() {
   return gulp.watch('src/css/**/*.scss', buildCss);
+}
+
+function watchCssGeneral() {
+  return gulp.watch('src/css/**/*.scss', buildCssGeneral);
 }
 
 /**
@@ -84,7 +96,7 @@ function watchPot() {
  * Deletes all build related files
  */
 function cleanBuild() {
-  return del([ 'build/**', 'languages/**', `${pluginName}.zip` ]);
+  return del(['build/**', 'languages/**', `${pluginName}.zip`]);
 }
 
 /**
@@ -106,10 +118,10 @@ function syncBrowser() {
 }
 
 // Groups all watch functions
-const watch = gulp.parallel(watchCss, watchBuild, watchPot);
+const watch = gulp.parallel(watchCss, watchCssGeneral, watchBuild, watchPot);
 
 // Groups all build functions
-const build = gulp.parallel(buildCss, buildPot);
+const build = gulp.parallel(buildCss, buildCssGeneral, buildPot);
 
 // Starts a browser sync instance and watches for changes.
 const defaultTask = gulp.parallel(syncBrowser, build, watch);
@@ -117,9 +129,9 @@ const defaultTask = gulp.parallel(syncBrowser, build, watch);
 // Exports tasks to CLI
 module.exports = {
   default: defaultTask,
-  'build': build,
-  'sync': syncBrowser,
-  'watch': watch,
-  'zip': makeZip,
+  build: build,
+  sync: syncBrowser,
+  watch: watch,
+  zip: makeZip,
   'clean:build': cleanBuild
 };
