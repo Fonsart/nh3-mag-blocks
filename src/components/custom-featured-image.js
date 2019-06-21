@@ -3,7 +3,6 @@ import { DocumentSelector } from './document-selector';
 import { Caption } from './caption';
 import { Credit } from './credit';
 import { Component } from '@wordpress/element';
-import { PHOTO_TYPE } from '../models/resources';
 import { calculateDimensions } from '../utils/misc';
 
 /**
@@ -131,7 +130,6 @@ export class CustomFeaturedImage extends Component {
     return (
       <div class="nh3-mag-custom-featured-image">
         <DocumentSelector
-          type={PHOTO_TYPE}
           processor={entry => this.processEntry(entry)}
           setDocumentState={changes => this.updateState(changes)}
           document={this.state}

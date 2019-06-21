@@ -24,7 +24,7 @@ const NAMESPACE = 'nh3';
   { name: 'video-document', definition: blockArchiveVideo },
   { name: 'on-topic-section', definition: blockOnTopicSection },
   { name: 'on-topic-nh3-links', definition: blockOnTopicNh3 },
-  { name: 'on-topic-ssr-links', definition: blockOnTopicSsr },
+  { name: 'on-topic-ssr-links', definition: blockOnTopicSsr }
 ].forEach(block => {
   registerBlockType(`${NAMESPACE}/${block.name}`, block.definition);
 });
@@ -36,7 +36,9 @@ const NAMESPACE = 'nh3';
 const FeaturedImage = compose(
   withSelect((select, props) => {
     // Get the featured image JSON data (if it exists) from the database
-    const meta = select('core/editor').getEditedPostAttribute('meta')[ props.metaFieldName ];
+    const meta = select('core/editor').getEditedPostAttribute('meta')[
+      props.metaFieldName
+    ];
     const data = meta ? JSON.parse(meta) : {};
     return {
       hash: data.hash,
@@ -56,10 +58,13 @@ const FeaturedImage = compose(
        * @param {Object} metaProps The post's featured image properties
        */
       setMeta: function(metaProps) {
-        const metaObj = { meta: { [ props.metaFieldName ]: JSON.stringify(metaProps) } };
+        const metaObj = {
+          meta: { [props.metaFieldName]: JSON.stringify(metaProps) }
+        };
+
         dispatch('core/editor').editPost(metaObj);
       }
-    }
+    };
   })
 )(CustomFeaturedImage);
 
@@ -67,7 +72,9 @@ const FeaturedImage = compose(
  * Called in the below filter to replace the default FeaturedImage block
  */
 function replacePostFeaturedImage() {
-  return () => <FeaturedImage metaFieldName="nh3_mag_custom_featured_image_field" />;
+  return () => (
+    <FeaturedImage metaFieldName="nh3_mag_custom_featured_image_field" />
+  );
 }
 
 /**
