@@ -58,15 +58,12 @@ Here's the list of all available blocks _(see [the code][whitelist])_
   * `nh3/on-topic-nh3-links`
   * `nh3/on-topic-ssr-links`
 
-Additionaly, the core blocks have been tweeked so that some of their actions are not available anymore.
+The core blocks can been tweeked so that some of their actions are not available anymore.
 
 > All those limitation are done using [some CSS][css-hack] to hide the buttons from the UI.
 >
 > This is unfortunately the only way to do this, since it's not possible to alter the behavior of core paragraphs without replacing them with a custom block
 
-* `core/paragraph` and `core/quote`
-  * Removed the toolbar for bold/italic/strike actions
-  * Removed the toolbar for the alignment and tabulation actions
 * `core/heading`
   * Removed the toolbar for bold/italic/strike actions
 * `core/paragraph` actually provides two blocks: the classic paragraph and an "inline image" block. This one has been hidden from the block selector (using CSS) since it's not supported by the NH3 Mag Theme.
