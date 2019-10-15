@@ -11,7 +11,7 @@ import { Alert } from '../components/alert';
  * ```
  * @see https://github.com/WordPress/gutenberg/tree/master/packages/block-editor/src/components/inner-blocks#allowedblocks
  */
-const ALLOWED_BLOCKS = [];
+const ALLOWED_BLOCKS = ['core/paragraph'];
 
 /**
  * Block that can contain links blocks, such as NH3 Links or SSR Links.
