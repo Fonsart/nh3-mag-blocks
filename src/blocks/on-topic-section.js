@@ -27,7 +27,7 @@ export default {
   edit({ className }) {
     return (
       <div className={className}>
-        <h2>{__("On the same topic")}</h2>
+        <h4>{__("On the same topic")}</h4>
         <Alert type='info' content={__("This block should be placed at the very end of your post")} />
         <InnerBlocks allowedBlocks={ALLOWED_BLOCKS} renderAppender={() => <OnTopicAppender />} />
       </div>
