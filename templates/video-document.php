@@ -8,7 +8,7 @@
 <?php if ( isset( $att['fileUrl'] ) ) : ?>
 	<figure class="nh3-block-video">
     <div class="wp-media-wrapper">
-      <video-js controls class="video-js vjs-big-play-centered" data-setup-temp='{"autoplay": false,"controls": true,"loadingSpinner": false,"bigPlayButton": true,"textTrackDisplay": false,"errorDisplay": false,"textTrackSettings": false,"poster": "<?php echo esc_url( $att['thumbnailUrl'] ); ?>","fluid": true,"techOrder": ["html5"],"preload": "auto", "sources": [{"src": "<?php echo esc_url( $att['fileUrl'] ); ?>","type": "<?php echo esc_attr( $att['mimeType'] ); ?>"}]}'>
+      <video-js controls class="video-js vjs-big-play-centered" data-setup='{"autoplay": false,"controls": true,"loadingSpinner": false,"bigPlayButton": true,"textTrackDisplay": false,"errorDisplay": false,"textTrackSettings": false,"poster": "<?php echo esc_url( $att['thumbnailUrl'] ); ?>","fluid": true,"techOrder": ["html5"],"preload": "auto", "sources": [{"src": "<?php echo esc_url( $att['fileUrl'] ); ?>","type": "<?php echo esc_attr( $att['mimeType'] ); ?>"}]}'>
       </video-js>
     </div>
     <?php if ( isset( $att['caption'] ) ) : ?>
